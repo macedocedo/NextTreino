@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NextTreino - Seu Personal Trainer Digital</title>
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💪</text></svg>">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Cabeçalho -->
+        <header class="app-header">
+            <div class="header-content">
+                <button class="menu-btn" id="menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <i class="fas fa-dumbbell"></i>
+                    <h1>NextTreino</h1>
+                </div>
+                <div class="header-actions">
+                   <button class="icon-btn" id="timer-btn">
+                      <!-- <i class="fas fa-clock"></i> -->  
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Menu Lateral -->
+        <div class="side-menu" id="side-menu">
+            <div class="menu-header">
+                <h3>Menu</h3>
+                <button class="close-menu" id="close-menu">&times;</button>
+            </div>
+            <div class="menu-items">
+                <button class="menu-item active" data-page="page-home">
+                    <i class="fas fa-home"></i>
+                    <span>Início</span>
+                </button>
+                <button class="menu-item" data-page="page-train">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Treinar</span>
+                </button>
+                <button class="menu-item" data-page="page-create">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Criar Treino</span>
+                </button>
+                <button class="menu-item" data-page="page-workouts">
+                    <i class="fas fa-list"></i>
+                    <span>Meus Treinos</span>
+                </button>
+              <!--  <button class="menu-item" data-page="page-favorites">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Favoritos</span>
+                </button>-->
+            </div>
+            <div class="menu-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <h4>Atleta</h4>
+                        <p>Bem-vindo de volta!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overlay do Menu -->
+        <div class="menu-overlay" id="menu-overlay"></div>
+
+        <!-- Conteúdo Principal -->
+        <main class="page-container">
+            <!-- Página 1: Início -->
+            <div class="page active" id="page-home">
+                <div class="page-content">
+                    <div class="welcome-card">
+                        <div class="welcome-content">
+                            <h2>Olá, Atleta!</h2>
+                            <p>Pronto para transformar seu corpo hoje?</p>
+                        </div>
+                        <div class="welcome-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <button class="quick-action" id="quick-start">
+                            <i class="fas fa-play-circle"></i>
+                            <span>Começar Treino</span>
+                        </button>
+                        <button class="quick-action" id="quick-create">
+                            <i class="fas fa-plus"></i>
+                            <span>Novo Treino</span>
+                        </button>
+                    </div>
+
+                    <div class="current-workout-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-calendar-day"></i>
+                            Treino do Dia
+                        </h3>
+                        <div class="workout-card featured" id="current-workout-card">
+                            <div class="workout-card-header">
+                                <div class="workout-icon-circle">
+                                    <i class="fas fa-dumbbell"></i>
+                                </div>
+                                <div>
+                                    <h3 id="current-workout-title">Sem treino</h3>
+                                    <p id="current-workout-count">0 exercícios</p>
+                                </div>
+                            </div>
+                            <p id="current-workout-desc">Crie ou selecione um treino para começar</p>
+                            <div class="workout-actions">
+                                <button class="btn btn-sm btn-outline" id="edit-workout">
+                                    <i class="fas fa-edit"></i>
+                                    Editar
+                                </button>
+                                <button class="btn btn-sm btn-primary" id="start-workout">
+                                    <i class="fas fa-play"></i>
+                                    Iniciar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-history"></i>
+                            Treinos Recentes
+                        </h3>
+                        <div class="recent-list" id="recent-list">
+                            <!-- Lista de treinos recentes -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página 2: Treinar -->
+            <div id="page-train" class="page"> <!-- Deve ser page-train, não page_train -->
+                <div class="page-content">
+                    <div class="train-header">
+                        <h2 class="page-title">
+                            <i class="fas fa-dumbbell"></i>
+                            Modo Treino
+                        </h2>
+                        <div class="workout-info">
+                            <span id="training-workout-name">Carregando...</span>
+                            <span class="exercise-counter" id="exercise-counter">0/0</span>
+                        </div>
+                    </div>
+
+                    <!-- Timer de Descanso -->
+                    <div class="rest-timer-container" id="rest-timer">
+                        <div class="timer-header">
+                            <i class="fas fa-clock"></i>
+                            <h3>Tempo de Descanso</h3>
+                            <button class="timer-close" id="timer-close">&times;</button>
+                        </div>
+                        <div class="timer-display">
+                            <div class="time-circle">
+                                <svg class="progress-ring" width="120" height="120">
+                                    <circle class="progress-ring-circle" stroke="#2E5BFF" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                </svg>
+                                <div class="time-text">
+                                    <span id="timer-minutes">01</span>:<span id="timer-seconds">30</span>
+                                </div>
+                            </div>
+                            <div class="timer-controls">
+                                <button class="timer-btn" id="timer-pause">
+                                    <i class="fas fa-pause"></i>
+                                </button>
+                                <button class="timer-btn" id="timer-reset">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                                <button class="timer-btn" id="timer-skip">
+                                    <i class="fas fa-forward"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="timer-instruction">
+                            <p>Descanse antes do próximo exercício</p>
+                        </div>
+                    </div>
+
+                    <!-- Carrossel de Exercícios -->
+                    <div class="training-section">
+                        <div class="carousel-container">
+                            <div class="carousel" id="training-carousel">
+                                <!-- Slides serão inseridos via JavaScript -->
+                            </div>
+                            
+                            <div class="carousel-controls">
+                                <button class="carousel-btn" id="carousel-prev">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <div class="carousel-indicators" id="carousel-indicators">
+                                    <!-- Indicadores serão inseridos via JavaScript -->
+                                </div>
+                                <button class="carousel-btn" id="carousel-next">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="exercise-details-card">
+                            <div class="exercise-header">
+                                <h3 id="exercise-name">Exercício</h3>
+                                <span class="muscle-tag" id="exercise-muscle">Músculo</span>
+                            </div>
+                            
+                            <div class="exercise-stats">
+                                <div class="stat">
+                                    <i class="fas fa-redo"></i>
+                                    <div>
+                                        <small>Séries</small>
+                                        <strong id="exercise-sets">-</strong>
+                                    </div>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-clock"></i>
+                                    <div>
+                                        <small>Descanso</small>
+                                        <strong id="exercise-rest">-</strong>
+                                    </div>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-weight-hanging"></i>
+                                    <div>
+                                        <small>Intensidade</small>
+                                        <strong id="exercise-intensity">-</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="exercise-description">
+                                <p id="exercise-description">Descrição do exercício aparecerá aqui</p>
+                            </div>
+                            
+                            <div class="training-controls">
+                                <button class="btn btn-outline" id="prev-exercise-btn">
+                                    <i class="fas fa-chevron-left"></i>
+                                    Anterior
+                                </button>
+                                <button class="btn btn-primary" id="start-rest-btn">
+                                    <i class="fas fa-clock"></i>
+                                    Descanso
+                                </button>
+                                <button class="btn btn-success" id="complete-btn">
+                                    <i class="fas fa-check"></i>
+                                    Concluir
+                                </button>
+                                <button class="btn btn-outline" id="next-exercise-btn">
+                                    Próximo
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página 3: Criar Treino -->
+            <div class="page" id="page-create">
+                <div class="page-content">
+                    <h2 class="page-title">
+                        <i class="fas fa-plus-circle"></i>
+                        Criar Novo Treino
+                    </h2>
+                    
+                    <div class="create-container">
+                        <div class="workout-name-section">
+                            <input type="text" id="workout-name" placeholder="Nome do treino (ex: Treino de Peito)" maxlength="50">
+                            <div class="char-count" id="char-count">0/50</div>
+                        </div>
+
+                        <div class="category-filter">
+                            <h3>
+                                <i class="fas fa-filter"></i>
+                                Filtrar por Grupo Muscular
+                            </h3>
+                            <div class="category-tags" id="category-tags">
+                                <!-- Categorias serão inseridas via JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="exercises-selection">
+                            <h3>
+                                <i class="fas fa-list"></i>
+                                Selecione os Exercícios
+                            </h3>
+                            <div class="exercises-grid" id="exercises-grid">
+                                <!-- Exercícios serão inseridos via JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="selected-exercises">
+                            <h3>
+                                <i class="fas fa-check-circle"></i>
+                                Exercícios Selecionados
+                                <span class="selected-count" id="selected-count">0</span>
+                            </h3>
+                            <div class="selected-list" id="selected-list">
+                                <div class="empty-selection">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <p>Selecione exercícios para criar seu treino</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="create-actions">
+                            <button class="btn btn-outline" id="cancel-create">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                            <button class="btn btn-primary" id="save-workout-btn">
+                                <i class="fas fa-save"></i>
+                                Salvar Treino
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página 4: Meus Treinos -->
+            <div class="page" id="page-workouts">
+                <div class="page-content">
+                    <h2 class="page-title">
+                        <i class="fas fa-list"></i>
+                        Meus Treinos
+                    </h2>
+                    
+                    <div class="workouts-container">
+                        <div class="workouts-header">
+                            <h3>Todos os Treinos</h3>
+                            <button class="btn btn-sm btn-primary" id="new-workout-btn">
+                                <i class="fas fa-plus"></i>
+                                Novo Treino
+                            </button>
+                        </div>
+
+                        <div class="empty-state" id="empty-workouts">
+                            <div class="empty-icon">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <h3>Nenhum treino criado</h3>
+                            <p>Crie seu primeiro treino personalizado</p>
+                            <button class="btn btn-outline" id="create-first-workout">
+                                <i class="fas fa-plus-circle"></i>
+                                Criar Treino
+                            </button>
+                        </div>
+
+                        <div class="workouts-list" id="workouts-list">
+                            <!-- Lista de treinos será inserida via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página 5: Exercícios Favoritos -->
+            <div class="page" id="page-favorites">
+                <div class="page-content">
+                    <h2 class="page-title">
+                        <i class="fas fa-bookmark"></i>
+                        Exercícios Favoritos
+                    </h2>
+                    
+                    <div class="favorites-container">
+                        <div class="favorites-header">
+                            <h3>Seus Favoritos</h3>
+                            <button class="btn btn-sm btn-outline" id="clear-favorites-btn">
+                                <i class="fas fa-trash"></i>
+                                Limpar
+                            </button>
+                        </div>
+
+                        <div class="empty-state" id="empty-favorites">
+                            <div class="empty-icon">
+                                <i class="fas fa-bookmark"></i>
+                            </div>
+                            <h3>Nenhum exercício favoritado</h3>
+                            <p>Marque exercícios como favoritos durante o treino</p>
+                        </div>
+
+                        <div class="favorites-grid" id="favorites-grid">
+                            <!-- Exercícios favoritos serão inseridos via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal de Confirmação -->
+        <div class="modal" id="confirm-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Confirmação</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="modal-message">Tem certeza que deseja continuar?</p>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" id="modal-cancel">Cancelar</button>
+                    <button class="btn btn-primary" id="modal-confirm">Confirmar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagens Flash -->
+        <div class="message" id="message"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
