@@ -6,7 +6,7 @@ const exerciseDatabase = {
             name: "Supino Reto",
             muscle: "Peito",
             description: "Deitando-se em um banco, com os pés apoiados no chão. Segure a barra com as mãos um pouco mais abertas que os ombros, desça até o peito e depois empurre para cima, estendendo os braços. Mantenha o corpo firme e controle a respiração.",
-            image: "/assets/img msc/Peito/supino reto.gif",
+            image: "/assets/img msc/Peito/supino-reto.gif",
             sets: "4x8-10",
             rest: "60-90s",
             intensity: "Média-Alta",
@@ -18,7 +18,7 @@ const exerciseDatabase = {
             name: "Supino Inclinado",
             muscle: "Peito Superior",
             description: "Deite-se no banco inclinado. Segure a barra com as mãos afastadas. Desça a barra até o peito superior e empurre para cima.",
-            image: "/assets/img msc/Peito/Supino inclinado.gif",
+            image: "/assets/img msc/Peito/Supino-inclinado.gif",
             sets: "4x8-12",
             rest: "90s",
             intensity: "Média",
@@ -26,11 +26,11 @@ const exerciseDatabase = {
             category: "peito"
         },
         {
-            id: "Crucifixo Inclinado",
+            id: "Crucifixo-Inclinado",
             name: "Crucifixo Inclinado",
             muscle: "Peito",
             description: "Deite-se no banco com halteres. Com os braços levemente flexionados, abra os braços até a altura dos ombros e retorne.",
-            image: "/assets/img msc/Peito/Crucifixo inclinado.gif",
+            image: "/assets/img msc/Peito/Crucifixo-inclinado.gif",
             sets: "4x8-10",
             rest: "60s",
             intensity: "Média",
@@ -38,11 +38,11 @@ const exerciseDatabase = {
             category: "peito"
         },
         {
-            id: "Crucifixo Baixo",
+            id: "Crucifixo-Baixo",
             name: "Crucifixo Baixo",
             muscle: "Peito Superior",
             description: "Fique entre as polias. Segure as alças e traga as mãos juntas na frente do corpo em movimento de arco.",
-            image: "/assets/img msc/Peito/Crucifixo Baixo.gif",
+            image: "/assets/img msc/Peito/Crucifixo-Baixo.gif",
             sets: "3x12-15",
             rest: "60s",
             intensity: "Média",
@@ -50,7 +50,7 @@ const exerciseDatabase = {
             category: "peito"
         },
         {
-            id: "Fly na Maquina",
+            id: "Fly-na-Maquina",
             name: "Fly na Maquina",
             muscle: "Peito",
             description: "Sente-se no banco, braços abertos com cotovelos levemente flexionados. Feche os braços em arco até à frente do peito, contraindo o peitoral, e volte devagar. Solte o ar ao fechar e inspire ao abrir.",   
@@ -76,11 +76,11 @@ const exerciseDatabase = {
     ],
     "costas": [
         {
-            id: "Costas Pulley Aberto",
+            id: "Costas-Pulley-Aberto",
             name: "Costas Pulley Aberto",
             muscle: "Costas",
             description: "Sente-se na máquina, segure a barra com as mãos afastadas. Puxe a barra em direção ao peito.",
-            image: "/assets/img msc/Costas/Costas Pulley aberto.gif",
+            image: "/assets/img msc/Costas/Pulley-aberto.gif",
             sets: "3x8-12",
             rest: "90s",
             intensity: "Alta",
@@ -92,7 +92,7 @@ const exerciseDatabase = {
             name: "Remada baixa",
             muscle: "Costas",
             description: "Com os pés afastados, segure a barra com as palmas para baixo. Puxe a barra em direção ao abdômen.",
-            image: "/assets/img msc/Costas/Remada baixa.gif",
+            image: "/assets/img msc/Costas/Remada-baixa.gif",
             sets: "4x8-12",
             rest: "90s",
             intensity: "Alta",
@@ -100,11 +100,11 @@ const exerciseDatabase = {
             category: "costas"
         },
         {
-            id: "Pulley neutro",
+            id: "Pulley-neutro",
             name: "Pulley neutro",
             muscle: "Costas",
             description: "Sente-se na máquina, segure as alças com as palmas voltadas uma para a outra. Puxe as alças em direção ao abdômen, contraindo as costas, e volte devagar ao ponto inicial. Expire ao puxar, inspire ao soltar.",
-            image: "/assets/img msc/Costas/Pulley neutro.gif",
+            image: "/assets/img msc/Costas/Pulley-neutro.gif",
             sets: "4x8-10",
             rest: "90s",
             intensity: "Alta",
@@ -116,7 +116,7 @@ const exerciseDatabase = {
             name: "Remada Curvada",
             muscle: "Costas",
             description: "Fique em pé, pés na largura dos ombros, segure a barra com braços estendidos. Incline o tronco à frente, mantendo costas retas. Puxe a barra em direção ao abdômen, contraindo as costas, e desça devagar. Expire ao puxar, inspire ao soltar.",
-            image: "/assets/img msc/Costas/Remada curvada.gif",
+            image: "/assets/img msc/Costas/Remada-curvada.gif",
             sets: "3x8-10",
             rest: "90s",
             intensity: "Alta",
@@ -124,11 +124,11 @@ const exerciseDatabase = {
             category: "costas"
         },
         {
-            id: "Barra fixa",
+            id: "Barra-fixa",
             name: "Barra fixa",
             muscle: "Costas",
             description: "Segure a barra com as mãos afastadas, palmas voltadas para frente (ou para você, se for pegada supinada). Puxe o corpo até o queixo passar da barra, mantendo o peito aberto e os ombros para baixo. Desça devagar e controlado. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Costas/Barra fixa.gif",
+            image: "/assets/img msc/Costas/Barra-fixa.gif",
             sets: "4x8-10",
             rest: "90s",
             intensity: "Alta",
@@ -136,11 +136,11 @@ const exerciseDatabase = {
             category: "costas"
         },
         {
-            id: "Costas Levantamento terra",
+            id: "Levantamento-terra",
             name: "Costas Levantamento terra",
             muscle: "Costas",
             description: "Fique em pé com os pés na largura dos ombros, barra à frente. Flexione os quadris e joelhos, segure a barra com firmeza. Levante a barra mantendo costas retas, quadril e ombros subindo juntos. Desça controlando o movimento. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Costas/Costas Levantamento terra.gif",
+            image: "/assets/img msc/Costas/Levantamento-terra.gif",
             sets: "3x3-4",
             rest: "90s",
             intensity: "Alta",
@@ -148,11 +148,11 @@ const exerciseDatabase = {
             category: "costas"
         },
         {
-            id: "Costas Pull Down",
+            id: "Costas-Pull-Down",
             name: "Costas Pull Down",
             muscle: "Costas",
             description: "Sente-se na máquina, segure a barra com as mãos afastadas, costas retas. Puxe a barra até a altura do peito, contraindo as costas, e suba devagar controlando o movimento. Expire ao puxar, inspire ao soltar.",
-            image: "/assets/img msc/Costas/Costas Pull down.gif",
+            image: "/assets/img msc/Costas/Costas-Pull-down.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -162,11 +162,11 @@ const exerciseDatabase = {
     ],
     "pernas": [
         {
-            id: "Agachamento livre",
+            id: "Agachamento-livre",
             name: "Agachamento livre",
             muscle: "Pernas",
             description: "Com os pés afastados, segure a barra sobre os ombros. Flexione os joelhos e desça como se fosse sentar.",
-            image: "/assets/img msc/Perna/Agachamento livre.gif",
+            image: "/assets/img msc/Perna/Agachamento-livre.gif",
             sets: "3x8-10",
             rest: "120s",
             intensity: "Alta",
@@ -198,11 +198,11 @@ const exerciseDatabase = {
             category: "pernas"
         },
         {
-            id: "Cadeira flexora",
+            id: "Cadeira-flexora",
             name: "Cadeira flexora",
             muscle: "Pernas",
             description: "Sente-se na máquina, encaixe os tornozelos sob o rolo. Flexione os joelhos, levando os calcanhares em direção aos glúteos, e volte devagar à posição inicial. Expire ao dobrar, inspire ao estender.",
-            image: "/assets/img msc/Perna/Cadeira flexora.gif",
+            image: "/assets/img msc/Perna/Cadeira-flexora.gif",
             sets: "4x10-12",
             rest: "90s",
             intensity: "Média-Alta",
@@ -226,7 +226,7 @@ const exerciseDatabase = {
             name: "Cadeira Extensora",
             muscle: "Quadríceps",
             description: "Sente-se na máquina com os tornozelos apoiados. Estenda as pernas contra a resistência.",
-            image: "/assets/img msc/Perna/Cadeira extensora.gif",
+            image: "/assets/img msc/Perna/Cadeira-extensora.gif",
             sets: "3x12-15",
             rest: "60s",
             intensity: "Média",
@@ -236,11 +236,11 @@ const exerciseDatabase = {
     ],
     "ombros": [
         {
-            id: "Desenvolvimento com halteres",
+            id: "Desenvolvimento-halteres",
             name: "Desenvolvimento com halteres",
             muscle: "Ombros",
             description: "Sente-se com as costas retas, segure os halteres ou barra na altura dos ombros. Empurre para cima até estender os braços sem travar os cotovelos e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Ombro/Desenvolvimento com halteres.gif",
+            image: "/assets/img msc/Ombro/Desenvolvimento-halteres.gif",
             sets: "4x8-12",
             rest: "90s",
             intensity: "Média-Alta",
@@ -248,11 +248,11 @@ const exerciseDatabase = {
             category: "ombros"
         },
         {
-            id: "crucifixo reverso",
+            id: "crucifixo-reverso",
             name: "crucifixo reverso",
             muscle: "Ombros",
             description: "Sente-se na máquina com o peito apoiado, segure as alças com braços quase estendidos à frente. Abra os braços para trás, contraindo as costas, e volte devagar. Expire ao abrir, inspire ao retornar.",
-            image: "/assets/img msc/Ombro/crucifixo reverso.gif",
+            image: "/assets/img msc/Ombro/crucifixo-reverso.gif",
             sets: "4x8-12",
             rest: "90s",
             intensity: "Média-Alta",
@@ -260,11 +260,11 @@ const exerciseDatabase = {
             category: "ombros"
         },
         {
-            id: "Elevacao frontal",
+            id: "Elevacao-frontal",
             name: "Elevacao frontal",
             muscle: "Ombros",
             description: "Segure halteres à frente das coxas, braços estendidos. Levante-os até a altura dos ombros, mantendo os cotovelos levemente dobrados, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Ombro/Elevacao frontal.gif",
+            image: "/assets/img msc/Ombro/Elevacao-frontal.gif",
             sets: "4x8-10",
             rest: "90s",
             intensity: "Média-Alta",
@@ -276,7 +276,7 @@ const exerciseDatabase = {
             name: "Elevação Lateral",
             muscle: "Ombros",
             description: "Em pé, segure halteres ao lado do corpo. Eleve os braços lateralmente até a altura dos ombros.",
-            image: "/assets/img msc/Ombro/Elevacao lateral.gif",
+            image: "/assets/img msc/Ombro/Elevacao-lateral.gif",
             sets: "4x12-15",
             rest: "60s",
             intensity: "Média",
@@ -286,11 +286,11 @@ const exerciseDatabase = {
     ],
     "biceps": [
         {
-            id: "Rosca direta barra W",
+            id: "Rosca-direta-barraW",
             name: "Rosca direta barra W",
             muscle: "Bíceps",
             description: "Em pé, segure a barra com as palmas para frente. Flexione os cotovelos trazendo a barra aos ombros.",
-            image: "/assets/img msc/Biceps/Rosca direta barra W.gif",
+            image: "/assets/img msc/Biceps/Rosca-direta-barraW.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -298,11 +298,11 @@ const exerciseDatabase = {
             category: "biceps"
         },
         {
-            id: "Rosca alternada",
+            id: "Rosca-alternada",
             name: "Rosca alternada",
             muscle: "Bíceps",
             description: "Segure um halter em cada mão, braços estendidos ao lado do corpo. Flexione um braço de cada vez, levando o halter ao ombro, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Biceps/Rosca alternada.gif",
+            image: "/assets/img msc/Biceps/Rosca-alternada.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -310,11 +310,11 @@ const exerciseDatabase = {
             category: "biceps"
         },
         {
-            id: "Rosca direta na polia",
+            id: "Rosca-direta-polia",
             name: "Rosca direta na polia",
             muscle: "Bíceps",
             description: "Segure a barra da polia com os braços estendidos e cotovelos fixos ao lado do corpo. Puxe a barra em direção aos ombros, contraindo os bíceps, e volte devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Biceps/Rosca direta na polia.gif",
+            image: "/assets/img msc/Biceps/Rosca-direta-polia.gif",
             sets: "3x10-12",
             rest: "60s",
             intensity: "Média",
@@ -322,11 +322,11 @@ const exerciseDatabase = {
             category: "biceps"
         },
         {
-            id: "Rosca martelo na polia",
+            id: "Rosca-martelo-polia",
             name: "Rosca martelo na polia",
             muscle: "Bíceps",
             description: "Segure a corda da polia com as palmas voltadas uma para a outra. Flexione os cotovelos, levando a corda aos ombros, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Biceps/Rosca martelo na polia.gif",
+            image: "/assets/img msc/Biceps/Rosca-martelo-polia.gif",
             sets: "3x10-12",
             rest: "60s",
             intensity: "Média",
@@ -334,11 +334,11 @@ const exerciseDatabase = {
             category: "biceps"
         },
         {
-            id: "Rosca Martelo",
+            id: "Rosca-Martelo",
             name: "Rosca Martelo",
             muscle: "Bíceps",
             description: "Em pé, segure halteres com as palmas voltadas uma para a outra. Flexione os cotovelos.",
-            image: "/assets/img msc/Biceps/Rosca Martelo.gif",
+            image: "/assets/img msc/Biceps/Rosca-Martelo.gif",
             sets: "3x10-12",
             rest: "60s",
             intensity: "Média",
@@ -348,11 +348,11 @@ const exerciseDatabase = {
     ],
         "Punho": [
         {
-            id: "Encolhimento de punho",
+            id: "Encolhimento-punho",
             name: "Encolhimento de punho",
             muscle: "Punho",
             description: "Segure halteres ou barra com os braços ao lado do corpo. Eleve apenas os ombros em direção às orelhas e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Punho/Encolhimento de punho.gif",
+            image: "/assets/img msc/Punho/Encolhimento-punho.gif",
             sets: "4x10-15",
             rest: "60s",
             intensity: "Média",
@@ -360,11 +360,11 @@ const exerciseDatabase = {
             category: "Punho"
         },
         {
-            id: "Rosca inversa",
+            id: "Rosca-inversa",
             name: "Rosca inversa",
             muscle: "Punho",
             description: "Segure a barra ou halteres com as palmas voltadas para baixo. Flexione os cotovelos, levando o peso aos ombros, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Punho/Rosca inversa.gif",
+            image: "/assets/img msc/Punho/Rosca-inversa.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -372,11 +372,11 @@ const exerciseDatabase = {
             category: "Punho"
         },
                 {
-            id: "Rosca invertida",
+            id: "Rosca-invertida",
             name: "Rosca invertida",
             muscle: "Punho",
             description: "Segure barra ou halteres com as palmas voltadas para baixo. Flexione os cotovelos, levando o peso aos ombros, mantendo os pulsos firmes, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Punho/Rosca invertida.gif",
+            image: "/assets/img msc/Punho/Rosca-invertida.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -384,11 +384,11 @@ const exerciseDatabase = {
             category: "Punho"
         },
                 {
-            id: "Rosca punho",
+            id: "Rosca-punho",
             name: "Rosca punho",
             muscle: "Punho",
             description: "Segure halteres ou barra com os braços apoiados e mãos voltadas para cima (ou para baixo, dependendo da variação). Flexione apenas os punhos, elevando o peso, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img msc/Punho/Rosca punho.gif",
+            image: "/assets/img msc/Punho/Rosca-punho.gif",
             sets: "3x12-15",
             rest: "60s",
             intensity: "Média",
