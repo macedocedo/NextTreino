@@ -412,6 +412,80 @@ const exerciseDatabase = {
             category: "ombros"
         }
     ],
+        "posteriores": [
+        {
+            id: "agachamento-goblet",
+            name: "agachamento goblet",
+            muscle: "posteriores",
+            description: "Segure o peso junto ao peito, afaste os pés na largura dos ombros, agache flexionando joelhos e quadril com o tronco ereto e volte empurrando o chão com os calcanhares.",
+            image: "/assets/img-msc/posteriores/agachamento-goblet.gif",
+            sets: "3x8-10",
+            rest: "90s",
+            intensity: "Média-Alta",
+            icon: "fas fa-arrow-up",
+            category: "posterior"
+        },
+        {
+            id: "mesa-flexora",
+            name: "mesa flexora",
+            muscle: "posteriores",
+            description: "A mesa flexora é feita deitado no aparelho, com os tornozelos apoiados no rolo. Flexione os joelhos levando o rolo em direção aos glúteos e retorne devagar à posição inicial, controlando o movimento.",
+            image: "/assets/img-msc/posteriores/mesa-flexora.gif",
+            sets: "4x8-12",
+            rest: "90s",
+            intensity: "Média-Alta",
+            icon: "fas fa-arrow-up",
+            category: "posterior"
+        },
+        {
+            id: "passada-invertida",
+            name: "passada invertida",
+            muscle: "posteriores",
+            description: "A passada invertida é feita em pé, dando um passo para trás e flexionando os joelhos até o joelho de trás se aproximar do chão. Em seguida, empurre o pé da frente para voltar à posição inicial, mantendo o tronco ereto.",
+            image: "/assets/img-msc/posteriores/passada-invertida.gif",
+            sets: "4x8-12",
+            rest: "90s",
+            intensity: "Média-Alta",
+            icon: "fas fa-arrow-up",
+            category: "posterior"
+        },
+        {
+            id: "stiff",
+            name: "stiff",
+            muscle: "posteriores",
+            description: "O stiff é feito em pé, segurando o peso à frente do corpo. Flexione levemente os joelhos, leve o quadril para trás mantendo as costas retas, desça o peso até a altura das pernas e retorne estendendo o quadril.",
+            image: "/assets/img-msc/posteriores/stiff.gif",
+            sets: "3x8-12",
+            rest: "90s",
+            intensity: "Média-Alta",
+            icon: "fas fa-arrow-up",
+            category: "posterior"
+        },
+        {
+            id: "levantamento-terra-romeno",
+            name: "levantamento terra romeno",
+            muscle: "posteriores",
+            description: "O levantamento terra romeno é feito em pé, segurando o peso à frente do corpo. Com joelhos levemente flexionados, empurre o quadril para trás mantendo a coluna reta, desça o peso próximo às pernas e volte estendendo o quadril.",
+            image: "/assets/img-msc/posteriores/levantamento-terra-romeno.gif",
+            sets: "3x8-10",
+            rest: "90s",
+            intensity: "Média-Alta",
+            icon: "fas fa-arrow-up",
+            category: "posterior"
+        },
+        {
+            id: "elevacao-pelvica",
+            name: "elevacao pelvica",
+            muscle: "posteriores",
+            description: "A elevação pélvica é feita deitado de costas, com os pés apoiados no chão e joelhos flexionados. Eleve o quadril contraindo os glúteos, formando uma linha entre joelhos, quadril e ombros, e retorne devagar.",
+            image: "/assets/img-msc/posteriores/agachamento-goblet.gif",
+            sets: "3x12-15",
+            rest: "60s",
+            intensity: "Média",
+            icon: "fas fa-arrows-alt-h",
+            category: "posterior"
+        }
+    ],
     "biceps": [
         {
             id: "rosca-direta-barra-w",
@@ -931,6 +1005,7 @@ function loadCategories() {
         { id: "pernas", name: "Pernas" },
         { id: "ombros", name: "Ombros" },
         { id: "biceps", name: "Bíceps" },
+        { id: "posteriores", name: "Posteriores" },
         { id: "punho", name: "Punho" },
         { id: "triceps", name: "Tríceps" }
     ];
