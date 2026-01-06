@@ -44,63 +44,6 @@ function fixImagePath(path) {
     return fixedPath;
 }
 
-function handleImageError(img) {
-    console.warn(`⚠️ Erro ao carregar imagem: ${img.src}`);
-    img.onerror = null; // Previne loop infinito
-    
-    const originalSrc = img.getAttribute('data-original-src') || img.src;
-    const filename = originalSrc.split('/').pop();
-    const serverBase = window.location.origin;
-    
-    // Estratégias de fallback em ordem de tentativa
-    const fallbackStrategies = [
-        // 1. Tenta caminho original (não modificado)
-        originalSrc,
-        
-        // 2. Tenta com caminho absoluto
-        serverBase + originalSrc,
-        
-        // 3. Tenta apenas o nome do arquivo na estrutura padrão (minúsculo)
-        '/assets/img-msc/' + filename.toLowerCase(),
-        
-        // 4. Tenta estrutura alternativa
-        '/assets/img-msc/default/' + filename.toLowerCase(),
-        
-        // 5. Imagem padrão
-        '/assets/default-exercise.gif'
-    ];
-    
-    let currentTry = 0;
-    const maxTries = fallbackStrategies.length;
-    
-    function tryNextStrategy() {
-        if (currentTry >= maxTries) {
-            console.log('📦 Todas as estratégias falharam, usando imagem padrão');
-            img.src = '/assets/default-exercise.gif';
-            img.style.backgroundColor = '#f0f0f0';
-            img.alt = 'Imagem não disponível';
-            return;
-        }
-        
-        const nextSrc = fallbackStrategies[currentTry];
-        console.log(`🔄 Tentativa ${currentTry + 1}/${maxTries}: ${nextSrc}`);
-        
-        const testImg = new Image();
-        testImg.onload = function() {
-            console.log(`✅ Sucesso: ${nextSrc}`);
-            img.src = nextSrc;
-        };
-        testImg.onerror = function() {
-            currentTry++;
-            // Espera um pouco antes da próxima tentativa
-            setTimeout(tryNextStrategy, 100);
-        };
-        testImg.src = nextSrc;
-    }
-    
-    tryNextStrategy();
-}
-
 // Função para verificar se uma imagem existe
 function checkImageExists(url, callback) {
     const img = new Image();
