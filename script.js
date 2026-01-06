@@ -805,7 +805,7 @@ function setupAllEventListeners() {
     // Página Inicial
     document.getElementById('quick-start').addEventListener('click', function() {
         if (currentWorkout) {
-            navigateToPage('page-train');
+            navigateToPage('page-workouts');
         } else {
             showMessage('Crie um treino primeiro!', 'warning');
             navigateToPage('page-create');
