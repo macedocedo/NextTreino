@@ -1662,7 +1662,7 @@ function updateTrainingCarousel() {
             <img src="${imagePath}" alt="${exercise.name}" class="exercise-image"
                  onerror="handleImageError(this)"
                  data-original-src="${exercise.image}"
-                 style="width: 100%; height: 300px; object-fit: cover;">
+                 style="width: 100%; height: 300px;">
             <div class="slide-overlay">
                 <h3>${exercise.name}</h3>
                 <p>${exercise.muscle}</p>
