@@ -316,7 +316,7 @@ const exerciseDatabase = {
             id: "costas-pull-down",
             name: "Costas Pull Down",
             muscle: "Costas",
-            description: "Sente-se na máquina, segure a barra com as mãos afastadas, costas retas. Puxe a barra até a altura do peito, contraindo as costas, e suba devagar controlando o movimento. Expire ao puxar, inspire ao soltar.",
+            description: "segure a barra com as mãos afastadas, costas retas. Puxe a barra até a altura do peito, contraindo as costas, e suba devagar controlando o movimento. Expire ao puxar, inspire ao soltar.",
             image: "costas/pull-down.gif",
             sets: "4x10-12",
             rest: "60s",
@@ -2033,3 +2033,4 @@ document.addEventListener('keydown', function(e) {
 console.log("✅ Aplicativo totalmente funcional!");
 console.log("📸 As imagens agora usam caminhos reais para os GIFs na pasta assets/img-msc/");
 console.log("🔄 Sistema de edição CORRIGIDO - agora funciona corretamente!");
+
