@@ -1,80 +1,39 @@
-// Função para corrigir caminhos de imagem automaticamente - VERSÃO SIMPLIFICADA
+// Função SIMPLIFICADA para corrigir caminhos de imagem
 function fixImagePath(path) {
     if (!path) return '/assets/default-exercise.gif';
     
     console.log(`🔧 Corrigindo caminho: ${path}`);
     
-    // Remove espaços e caracteres problemáticos
-    let fixedPath = path.replace(/ /g, '-');
-    
-    // Se ainda tiver %20, substitui por -
-    fixedPath = fixedPath.replace(/%20/g, '-');
-    
-    // Converte para minúsculas (problema comum em servidores Linux)
-    fixedPath = fixedPath.toLowerCase();
-    
-    // Remove caracteres especiais, mas mantém ponto para extensões
-    fixedPath = fixedPath.replace(/[^a-zA-Z0-9\-_./]/g, '');
-    
-    // Garante que não tenha barras duplas
-    fixedPath = fixedPath.replace(/\/+/g, '/');
-    
-    // Se o caminho já começar com /assets/, mantém
-    if (fixedPath.startsWith('/assets/')) {
-        return fixedPath;
+    // Se já é um caminho completo, retorna
+    if (path.startsWith('/assets/') || path.startsWith('http')) {
+        return path;
     }
     
-    // Se começar com assets/, adiciona a barra inicial
-    if (fixedPath.startsWith('assets/')) {
-        return '/' + fixedPath;
+    // Se parece ser um GIF, mantém como está
+    if (path.includes('.gif') || path.includes('.GIF')) {
+        // Garante que comece com /assets/
+        if (!path.startsWith('/assets/')) {
+            return '/assets/' + path.replace(/^\/?/, '');
+        }
+        return path;
     }
     
-    // Se não tiver /assets no caminho, adiciona
-    if (!fixedPath.includes('/assets/')) {
-        return '/assets/img-msc/' + fixedPath.split('/').pop();
-    }
-    
-    return fixedPath;
+    // Fallback padrão
+    return '/assets/default-exercise.gif';
 }
 
 // Função SIMPLIFICADA para lidar com erro de imagem
 function handleImageError(img) {
-    console.warn(`⚠️ Erro ao carregar imagem: ${img.src}`);
+    console.warn(`⚠️ Erro ao carregar: ${img.src}`);
     img.onerror = null; // Previne loop infinito
     
-    // Tenta usar imagem padrão como fallback
-    img.src = '/assets/default-exercise.gif';
-    img.style.backgroundColor = '#f0f0f0';
-    img.alt = 'Imagem não disponível';
+    // Tenta apenas uma vez a imagem padrão
+    if (img.src !== '/assets/default-exercise.gif') {
+        img.src = '/assets/default-exercise.gif';
+    }
 }
 
-// Função para verificar se uma imagem existe
-function checkImageExists(url, callback) {
-    const img = new Image();
-    img.onload = function() {
-        callback(true);
-    };
-    img.onerror = function() {
-        callback(false);
-    };
-    img.src = url;
-}
-
-// Função para pré-carregar imagens importantes
-function preloadImportantImages() {
-    const importantImages = [
-        '/assets/default-exercise.gif',
-        '/assets/img-msc/peito/supino-reto.gif',
-        '/assets/img-msc/peito/supino-inclinado.gif'
-    ];
-    
-    importantImages.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
-}
-
-// Base de dados de exercícios com caminhos PADRÃO e CONSISTENTES
+// Base de dados de exercícios com caminhos diretos para GIFs
 const exerciseDatabase = {
     "peito": [
         {
@@ -82,7 +41,7 @@ const exerciseDatabase = {
             name: "Supino Reto",
             muscle: "Peito",
             description: "Deitando-se em um banco, com os pés apoiados no chão. Segure a barra com as mãos um pouco mais abertas que os ombros, desça até o peito e depois empulse para cima, estendendo os braços. Mantenha o corpo firme e controle a respiração.",
-            image: "/assets/img-msc/peito/supino-reto.gif",
+            image: "/assets/gif/supino-reto.gif",  // CAMINHO DIRETO PARA SUA PASTA GIF
             sets: "4x8-10",
             rest: "60-90s",
             intensity: "Média-Alta",
@@ -94,18 +53,18 @@ const exerciseDatabase = {
             name: "Supino Inclinado",
             muscle: "Peito Superior",
             description: "Deite-se no banco inclinado. Segure a barra com as mãos afastadas. Desça a barra até o peito superior e empulse para cima.",
-            image: "/assets/img-msc/peito/supino-inclinado.gif",
+            image: "/assets/gif/supino-inclinado.gif",  // CAMINHO DIRETO PARA SUA PASTA GIF
             sets: "4x8-12",
             rest: "90s",
             intensity: "Média",
             icon: "fas fa-arrow-up",
             category: "peito"
         }
-        // ... resto dos exercícios (mantenha como está)
+        // Adicione mais exercícios com caminhos diretos para sua pasta GIF
     ]
 };
 
-// Estado da aplicação
+// Estado da aplicação (mantenha igual)
 let currentWorkout = null;
 let currentExerciseIndex = 0;
 let selectedExercises = [];
@@ -117,39 +76,31 @@ let remainingRestTime = 90;
 let totalRestTime = 90;
 let currentCategory = "todos";
 
-// FUNÇÃO GLOBAL PARA PERMITIR TODOS OS GIFs SEM VALIDAÇÃO
-window.loadAllGifs = function() {
-    // Remove qualquer validação de tipo de imagem
-    const allImages = document.querySelectorAll('img[src*=".gif"], img[src*=".GIF"]');
+// Função para carregar imagem corretamente
+function loadImage(img, path) {
+    const imagePath = fixImagePath(path);
     
-    allImages.forEach(img => {
-        // Força o recarregamento sem validações
-        const originalSrc = img.src;
-        
-        // Se a imagem falhou, tenta recarregar
-        img.onerror = function() {
-            console.log(`🔄 Tentando recarregar GIF: ${originalSrc}`);
-            this.src = '';
-            setTimeout(() => {
-                this.src = originalSrc + '?t=' + new Date().getTime();
-            }, 100);
-        };
-        
-        // Força o recarregamento para garantir que o GIF funcione
-        if (originalSrc.includes('.gif')) {
-            setTimeout(() => {
-                img.src = originalSrc + '?t=' + new Date().getTime();
-            }, 500);
-        }
-    });
-};
+    // Limpa eventos anteriores para evitar loops
+    img.onload = null;
+    img.onerror = null;
+    
+    // Tenta carregar a imagem
+    img.src = imagePath;
+    
+    // Configura fallback em caso de erro
+    img.onerror = function() {
+        handleImageError(this);
+    };
+    
+    // Adiciona atributo para debug
+    img.setAttribute('data-debug-path', path);
+}
+
+// REMOVI A FUNÇÃO loadAllGifs() que causava loop infinito
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🏋️‍♂️ NextTreino Iniciando...");
-    
-    // Pré-carrega imagens importantes
-    preloadImportantImages();
     
     // Carrega dados salvos
     loadSavedData();
@@ -160,12 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializa a página inicial
     updateHomePage();
     
-    // Força carregamento de todos os GIFs após 1 segundo
-    setTimeout(() => {
-        window.loadAllGifs();
-    }, 1000);
-    
-    console.log("✅ NextTreino Pronto! GIFs liberados.");
+    console.log("✅ NextTreino Pronto!");
 });
 
 // ======================
@@ -196,20 +142,19 @@ function loadSavedData() {
         }
     } catch (error) {
         console.error('❌ Erro ao carregar dados:', error);
-        // Inicializa arrays vazios
         customWorkouts = [];
         favoriteExercises = [];
     }
 }
 
 // ======================
-// CONFIGURAÇÃO DE EVENTOS
+// CONFIGURAÇÃO DE EVENTOS (mantenha igual)
 // ======================
 
 function setupAllEventListeners() {
     console.log("🔌 Configurando eventos...");
     
-    // Menu Lateral - CORREÇÃO: Verifica se elementos existem
+    // Menu Lateral
     const menuBtn = document.getElementById('menu-btn');
     const closeMenuBtn = document.getElementById('close-menu');
     const menuOverlay = document.getElementById('menu-overlay');
@@ -223,16 +168,14 @@ function setupAllEventListeners() {
         item.addEventListener('click', function() {
             const pageId = this.dataset.page;
             
-            // Atualiza item ativo
             document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
             this.classList.add('active');
             
-            // Navega para a página
             navigateToPage(pageId);
         });
     });
     
-    // Página Inicial - CORREÇÃO: Verifica se elementos existem
+    // Página Inicial
     const quickStartBtn = document.getElementById('quick-start');
     const quickCreateBtn = document.getElementById('quick-create');
     const editWorkoutBtn = document.getElementById('edit-workout');
@@ -275,46 +218,32 @@ function setupAllEventListeners() {
         });
     }
     
-    // Página Criar Treino - CORREÇÃO: Verifica se elementos existem
+    // Página Criar Treino
     const workoutNameInput = document.getElementById('workout-name');
     const cancelCreateBtn = document.getElementById('cancel-create');
     const saveWorkoutBtn = document.getElementById('save-workout-btn');
     
-    if (workoutNameInput) {
-        workoutNameInput.addEventListener('input', updateCharCount);
-    }
+    if (workoutNameInput) workoutNameInput.addEventListener('input', updateCharCount);
+    if (cancelCreateBtn) cancelCreateBtn.addEventListener('click', cancelCreation);
+    if (saveWorkoutBtn) saveWorkoutBtn.addEventListener('click', saveWorkout);
     
-    if (cancelCreateBtn) {
-        cancelCreateBtn.addEventListener('click', cancelCreation);
-    }
-    
-    if (saveWorkoutBtn) {
-        saveWorkoutBtn.addEventListener('click', saveWorkout);
-    }
-    
-    // Página Meus Treinos - CORREÇÃO: Verifica se elementos existem
+    // Página Meus Treinos
     const newWorkoutBtn = document.getElementById('new-workout-btn');
     const createFirstWorkoutBtn = document.getElementById('create-first-workout');
     
-    if (newWorkoutBtn) {
-        newWorkoutBtn.addEventListener('click', function() {
-            navigateToPage('page-create');
-        });
-    }
+    if (newWorkoutBtn) newWorkoutBtn.addEventListener('click', function() {
+        navigateToPage('page-create');
+    });
     
-    if (createFirstWorkoutBtn) {
-        createFirstWorkoutBtn.addEventListener('click', function() {
-            navigateToPage('page-create');
-        });
-    }
+    if (createFirstWorkoutBtn) createFirstWorkoutBtn.addEventListener('click', function() {
+        navigateToPage('page-create');
+    });
     
     // Página Favoritos
     const clearFavoritesBtn = document.getElementById('clear-favorites-btn');
-    if (clearFavoritesBtn) {
-        clearFavoritesBtn.addEventListener('click', clearFavorites);
-    }
+    if (clearFavoritesBtn) clearFavoritesBtn.addEventListener('click', clearFavorites);
     
-    // Página Treinar - CORREÇÃO: Verifica se elementos existem
+    // Página Treinar
     const carouselPrevBtn = document.getElementById('carousel-prev');
     const carouselNextBtn = document.getElementById('carousel-next');
     const prevExerciseBtn = document.getElementById('prev-exercise-btn');
@@ -329,7 +258,7 @@ function setupAllEventListeners() {
     if (startRestBtn) startRestBtn.addEventListener('click', startRestTimer);
     if (completeBtn) completeBtn.addEventListener('click', completeExercise);
     
-    // Timer - CORREÇÃO: Verifica se elementos existem
+    // Timer
     const timerPauseBtn = document.getElementById('timer-pause');
     const timerResetBtn = document.getElementById('timer-reset');
     const timerSkipBtn = document.getElementById('timer-skip');
@@ -346,7 +275,7 @@ function setupAllEventListeners() {
         });
     }
     
-    // Modal - CORREÇÃO: Verifica se elementos existem
+    // Modal
     const closeModalBtn = document.querySelector('.close-modal');
     const modalCancelBtn = document.getElementById('modal-cancel');
     
@@ -357,21 +286,18 @@ function setupAllEventListeners() {
 }
 
 // ======================
-// NAVEGAÇÃO
+// NAVEGAÇÃO (mantenha igual)
 // ======================
 
 function navigateToPage(pageId) {
     console.log(`➡️ Navegando para: ${pageId}`);
     
-    // Esconde todas as páginas
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     
-    // Mostra a página solicitada
     const page = document.getElementById(pageId);
     if (page) {
         page.classList.add('active');
         
-        // Atualizações específicas por página
         switch(pageId) {
             case 'page-home':
                 updateHomePage();
@@ -388,12 +314,9 @@ function navigateToPage(pageId) {
             case 'page-favorites':
                 updateFavoritesPage();
                 break;
-            default:
-                console.warn(`⚠️ Página desconhecida: ${pageId}`);
         }
     } else {
         console.error(`❌ Página não encontrada: ${pageId}`);
-        // Fallback para página inicial
         const homePage = document.getElementById('page-home');
         if (homePage) {
             homePage.classList.add('active');
@@ -419,13 +342,12 @@ function closeMenu() {
 }
 
 // ======================
-// PÁGINA INICIAL
+// PÁGINA INICIAL (mantenha igual)
 // ======================
 
 function updateHomePage() {
     console.log("🏠 Atualizando página inicial...");
     
-    // Atualiza card do treino atual
     const title = document.getElementById('current-workout-title');
     const count = document.getElementById('current-workout-count');
     const desc = document.getElementById('current-workout-desc');
@@ -449,7 +371,6 @@ function updateHomePage() {
         currentWorkoutCard.classList.remove('featured');
     }
     
-    // Atualiza lista de treinos recentes
     updateRecentWorkouts();
 }
 
@@ -469,7 +390,6 @@ function updateRecentWorkouts() {
     
     recentList.innerHTML = '';
     
-    // Mostra até 3 treinos recentes
     const recentWorkouts = customWorkouts.slice(0, 3);
     
     recentWorkouts.forEach(workout => {
@@ -507,19 +427,11 @@ function updateRecentWorkouts() {
 function initCreatePage() {
     console.log("🛠️ Inicializando página de criação...");
     
-    // Reseta seleção
     selectedExercises = [];
     
-    // Carrega categorias
     loadCategories();
-    
-    // Carrega exercícios
     loadExercises();
-    
-    // Atualiza contador de caracteres
     updateCharCount();
-    
-    // Atualiza lista selecionada
     updateSelectedList();
 }
 
@@ -562,7 +474,6 @@ function loadExercises() {
     const grid = document.getElementById('exercises-grid');
     if (!grid) return;
     
-    // Filtra exercícios
     let exercises = [];
     if (currentCategory === "todos") {
         Object.values(exerciseDatabase).forEach(cat => exercises.push(...cat));
@@ -584,14 +495,10 @@ function loadExercises() {
         card.className = `exercise-card ${isSelected ? 'selected' : ''}`;
         card.dataset.id = exercise.id;
         
-        // USANDO fixImagePath SEM VALIDAÇÕES DE GIF
-        const imagePath = fixImagePath(exercise.image);
-        
         card.innerHTML = `
             <div class="exercise-card-image">
-                <img src="${imagePath}" alt="${exercise.name}" loading="lazy"
-                     onerror="handleImageError(this)"
-                     data-original-src="${exercise.image}">
+                <img src="${exercise.image}" alt="${exercise.name}" loading="lazy"
+                     onerror="handleImageError(this)">
                 <div class="exercise-card-overlay">
                     <i class="fas fa-check"></i>
                 </div>
@@ -615,15 +522,13 @@ function toggleExerciseSelection(exercise) {
     const index = selectedExercises.findIndex(e => e.id === exercise.id);
     
     if (index > -1) {
-        // Remove da seleção
         selectedExercises.splice(index, 1);
     } else {
-        // Adiciona à seleção
         selectedExercises.push({...exercise});
     }
     
     updateSelectedList();
-    loadExercises(); // Atualiza visualização
+    loadExercises();
 }
 
 function updateSelectedList() {
@@ -710,7 +615,6 @@ function saveWorkout() {
     
     const workoutName = nameInput.value.trim();
     
-    // Validação do nome
     if (!workoutName) {
         showMessage('Digite um nome para o treino!', 'error');
         nameInput.focus();
@@ -728,7 +632,6 @@ function saveWorkout() {
         return;
     }
     
-    // Verifica se já existe treino com mesmo nome
     const existingWorkout = customWorkouts.find(w => 
         w.name.toLowerCase() === workoutName.toLowerCase()
     );
@@ -738,7 +641,6 @@ function saveWorkout() {
             'Treino existente',
             `Já existe um treino chamado "${workoutName}". Deseja substituí-lo?`,
             () => {
-                // Remove o existente e continua
                 customWorkouts = customWorkouts.filter(w => w.id !== existingWorkout.id);
                 finishSavingWorkout(workoutName);
             }
@@ -750,7 +652,6 @@ function saveWorkout() {
 }
 
 function finishSavingWorkout(workoutName) {
-    // Cria novo treino
     const newWorkout = {
         id: Date.now().toString(),
         name: workoutName,
@@ -762,25 +663,20 @@ function finishSavingWorkout(workoutName) {
     
     console.log("💾 Salvando treino:", newWorkout);
     
-    // Adiciona à lista de treinos
     customWorkouts.unshift(newWorkout);
     
-    // Salva no localStorage
     try {
         localStorage.setItem('NextTreinoWorkouts', JSON.stringify(customWorkouts));
         
-        // Define como treino atual
         currentWorkout = newWorkout;
         localStorage.setItem('NextTreinoCurrent', JSON.stringify(newWorkout));
         
-        // Limpa formulário
         selectedExercises = [];
         const workoutNameInput = document.getElementById('workout-name');
         if (workoutNameInput) workoutNameInput.value = '';
         updateCharCount();
         updateSelectedList();
         
-        // Redireciona para a página de treino
         showMessage(`Treino "${workoutName}" criado com sucesso!`, 'success');
         navigateToPage('page-train');
         
@@ -791,7 +687,7 @@ function finishSavingWorkout(workoutName) {
 }
 
 // ======================
-// PÁGINA MEUS TREINOS
+// PÁGINA MEUS TREINOS (mantenha igual)
 // ======================
 
 function updateWorkoutsPage() {
@@ -839,19 +735,16 @@ function updateWorkoutsPage() {
             </div>
         `;
         
-        // Botão Treinar
         item.querySelector('.train-action').addEventListener('click', function(e) {
             e.stopPropagation();
             loadWorkout(this.dataset.id);
         });
         
-        // Botão Editar
         item.querySelector('.edit-action').addEventListener('click', function(e) {
             e.stopPropagation();
             editWorkout(this.dataset.id);
         });
         
-        // Botão Excluir
         item.querySelector('.delete-action').addEventListener('click', function(e) {
             e.stopPropagation();
             deleteWorkout(this.dataset.id);
@@ -868,15 +761,12 @@ function loadWorkout(workoutId) {
         return;
     }
     
-    // Define como treino atual
     currentWorkout = workout;
     localStorage.setItem('NextTreinoCurrent', JSON.stringify(workout));
     
-    // Atualiza data de último uso
     workout.lastUsed = new Date().toISOString();
     localStorage.setItem('NextTreinoWorkouts', JSON.stringify(customWorkouts));
     
-    // Vai para a página de treino
     showMessage(`Treino "${workout.name}" carregado!`, 'success');
     navigateToPage('page-train');
 }
@@ -888,16 +778,13 @@ function editWorkout(workoutId) {
         return;
     }
     
-    // Preenche formulário
     const workoutNameInput = document.getElementById('workout-name');
     if (workoutNameInput) workoutNameInput.value = workout.name;
     selectedExercises = [...workout.exercises];
     
-    // Remove da lista (será recriado)
     customWorkouts = customWorkouts.filter(w => w.id !== workoutId);
     localStorage.setItem('NextTreinoWorkouts', JSON.stringify(customWorkouts));
     
-    // Vai para página de criação
     updateSelectedList();
     loadExercises();
     navigateToPage('page-create');
@@ -912,16 +799,13 @@ function deleteWorkout(workoutId) {
         () => {
             customWorkouts = customWorkouts.filter(w => w.id !== workoutId);
             
-            // Se for o treino atual, limpa
             if (currentWorkout && currentWorkout.id === workoutId) {
                 currentWorkout = null;
                 localStorage.removeItem('NextTreinoCurrent');
             }
             
-            // Salva alterações
             localStorage.setItem('NextTreinoWorkouts', JSON.stringify(customWorkouts));
             
-            // Atualiza UI
             updateWorkoutsPage();
             updateHomePage();
             
@@ -941,7 +825,6 @@ function updateTrainPage() {
         console.warn("⚠️ Nenhum treino disponível");
         
         if (customWorkouts.length > 0) {
-            // Usa o primeiro treino disponível
             currentWorkout = customWorkouts[0];
             localStorage.setItem('NextTreinoCurrent', JSON.stringify(currentWorkout));
             console.log(`✅ Usando treino: ${currentWorkout.name}`);
@@ -954,25 +837,14 @@ function updateTrainPage() {
     
     console.log(`✅ Carregando: ${currentWorkout.name} (${currentWorkout.exercises.length} exercícios)`);
     
-    // Atualiza informações - CORREÇÃO: Verifica se elementos existem
     const trainingWorkoutName = document.getElementById('training-workout-name');
     if (trainingWorkoutName) {
         trainingWorkoutName.textContent = currentWorkout.name;
     }
     
-    // Reinicia índice
     currentExerciseIndex = 0;
-    
-    // Atualiza carrossel
     updateTrainingCarousel();
-    
-    // Atualiza detalhes do exercício atual
     updateCurrentExercise();
-    
-    // Força recarregamento de GIFs
-    setTimeout(() => {
-        window.loadAllGifs();
-    }, 500);
 }
 
 function updateTrainingCarousel() {
@@ -981,23 +853,16 @@ function updateTrainingCarousel() {
     
     if (!carousel || !indicators) return;
     
-    // Limpa
     carousel.innerHTML = '';
     indicators.innerHTML = '';
     
-    // Adiciona slides
     currentWorkout.exercises.forEach((exercise, index) => {
-        // Slide
         const slide = document.createElement('div');
         slide.className = `carousel-slide ${index === currentExerciseIndex ? 'active' : ''}`;
         
-        // USANDO fixImagePath SEM VALIDAÇÕES DE GIF
-        const imagePath = fixImagePath(exercise.image);
-        
         slide.innerHTML = `
-            <img src="${imagePath}" alt="${exercise.name}" class="exercise-image"
-                 onerror="handleImageError(this)"
-                 data-original-src="${exercise.image}">
+            <img src="${exercise.image}" alt="${exercise.name}" class="exercise-image"
+                 onerror="handleImageError(this)">
             <div class="slide-overlay">
                 <h3>${exercise.name}</h3>
                 <p>${exercise.muscle}</p>
@@ -1006,7 +871,6 @@ function updateTrainingCarousel() {
         
         carousel.appendChild(slide);
         
-        // Indicador
         const indicator = document.createElement('div');
         indicator.className = `indicator ${index === currentExerciseIndex ? 'active' : ''}`;
         indicator.dataset.index = index;
@@ -1042,7 +906,6 @@ function updateCurrentExercise() {
     
     const exercise = currentWorkout.exercises[currentExerciseIndex];
     
-    // Atualiza detalhes - CORREÇÃO: Verifica se elementos existem
     const exerciseName = document.getElementById('exercise-name');
     const exerciseMuscle = document.getElementById('exercise-muscle');
     const exerciseSets = document.getElementById('exercise-sets');
@@ -1061,7 +924,6 @@ function updateCurrentExercise() {
         exerciseCounter.textContent = `${currentExerciseIndex + 1}/${currentWorkout.exercises.length}`;
     }
     
-    // Configura timer
     const restMatch = exercise.rest.match(/(\d+)/);
     if (restMatch) {
         totalRestTime = parseInt(restMatch[1]);
@@ -1098,7 +960,6 @@ function completeExercise() {
     
     const exercise = currentWorkout.exercises[currentExerciseIndex];
     
-    // Adiciona aos favoritos (se não estiver)
     const isFavorite = favoriteExercises.some(fav => fav.id === exercise.id);
     if (!isFavorite) {
         favoriteExercises.unshift({...exercise});
@@ -1107,13 +968,11 @@ function completeExercise() {
     
     showMessage(`${exercise.name} concluído! ✅`, 'success');
     
-    // Vai para próximo
     if (currentExerciseIndex < currentWorkout.exercises.length - 1) {
         currentExerciseIndex++;
         updateCarouselView();
         updateCurrentExercise();
         
-        // Inicia descanso automaticamente
         setTimeout(() => startRestTimer(), 500);
     } else {
         showMessage('🎉 Treino concluído! Parabéns!', 'success');
@@ -1121,7 +980,7 @@ function completeExercise() {
 }
 
 // ======================
-// TIMER
+// TIMER (mantenha igual)
 // ======================
 
 function startRestTimer() {
@@ -1135,7 +994,6 @@ function startRestTimer() {
         return;
     }
     
-    // Configura timer
     const exercise = currentWorkout.exercises[currentExerciseIndex];
     const restMatch = exercise.rest.match(/(\d+)/);
     
@@ -1255,12 +1113,9 @@ function updateFavoritesPage() {
         const card = document.createElement('div');
         card.className = 'favorite-card';
         
-        // USANDO fixImagePath SEM VALIDAÇÕES DE GIF
-        const imagePath = fixImagePath(exercise.image);
-        
         card.innerHTML = `
             <div class="favorite-card-image">
-                <img src="${imagePath}" alt="${exercise.name}"
+                <img src="${exercise.image}" alt="${exercise.name}"
                      onerror="handleImageError(this)">
                 <div class="favorite-overlay">
                     <i class="fas fa-bookmark"></i>
@@ -1332,15 +1187,12 @@ function showConfirm(title, message, callback) {
     
     if (!modal || !modalTitle || !modalMessage || !modalConfirm) return;
     
-    // Configura conteúdo
     modalTitle.textContent = title;
     modalMessage.textContent = message;
     
-    // Remove listener antigo
     const newConfirm = modalConfirm.cloneNode(true);
     modalConfirm.parentNode.replaceChild(newConfirm, modalConfirm);
     
-    // Configura novo listener
     const newModalConfirm = document.getElementById('modal-confirm');
     if (newModalConfirm) {
         newModalConfirm.addEventListener('click', function() {
@@ -1349,7 +1201,6 @@ function showConfirm(title, message, callback) {
         });
     }
     
-    // Mostra modal
     modal.classList.add('active');
 }
 
@@ -1374,7 +1225,6 @@ function showMessage(text, type) {
 // INICIALIZAÇÃO FINAL
 // ======================
 
-// Configura evento de teclado
 document.addEventListener('keydown', function(e) {
     if (e.key === 'ArrowLeft') prevExercise();
     if (e.key === 'ArrowRight') nextExercise();
@@ -1385,11 +1235,4 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Força recarregamento de GIFs quando a página ganha foco
-window.addEventListener('focus', function() {
-    setTimeout(() => {
-        window.loadAllGifs();
-    }, 1000);
-});
-
-console.log("✅ Aplicativo pronto! Todas as validações de GIF foram removidas.");
+console.log("✅ Aplicativo pronto! Foco em exibir GIFs da pasta.");
