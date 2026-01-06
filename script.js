@@ -1,72 +1,238 @@
-// Função para corrigir caminhos de imagem automaticamente
+// Função SIMPLIFICADA para corrigir caminhos de imagem
 function fixImagePath(path) {
     if (!path) return '/assets/default-exercise.gif';
     
-    console.log(`🔧 Corrigindo caminho: ${path}`);
+    console.log(`🔧 Processando caminho: ${path}`);
     
-    // Remove espaços e caracteres problemáticos
-    let fixedPath = path.replace(/ /g, '-');
-    
-    // Se ainda tiver %20, substitui por -
-    fixedPath = fixedPath.replace(/%20/g, '-');
-    
-    // Converte para minúsculas (problema comum em servidores Linux)
-    fixedPath = fixedPath.toLowerCase();
-    
-    // Remove caracteres especiais
-    fixedPath = fixedPath.replace(/[^a-zA-Z0-9\-_./]/g, '');
-    
-    // Corrige problemas comuns de caminho
-    if (fixedPath.includes('img-msc')) {
-        fixedPath = fixedPath.replace('img-msc', 'img-msc');
-    } else if (fixedPath.includes('img msc')) {
-        fixedPath = fixedPath.replace('img msc', 'img-msc');
+    // Se já for um caminho válido e absoluto, retorna como está
+    if (path.startsWith('/assets/')) {
+        console.log(`✅ Caminho já válido: ${path}`);
+        return path;
     }
     
-    // Garante que não tenha barras duplas
-    fixedPath = fixedPath.replace(/\/+/g, '/');
-    
-    // Se o caminho já começar com /assets/, mantém
-    if (fixedPath.startsWith('/assets/')) {
-        return fixedPath;
+    // Se for um caminho relativo sem barra inicial
+    if (path.startsWith('assets/')) {
+        const fixed = '/' + path;
+        console.log(`📝 Convertido relativo: ${fixed}`);
+        return fixed;
     }
     
-    // Se começar com assets/, adiciona a barra inicial
-    if (fixedPath.startsWith('assets/')) {
-        return '/' + fixedPath;
-    }
+    // Para caminhos mal formatados, tenta extrair o nome do arquivo
+    const filename = path.split('/').pop().toLowerCase();
     
-    // Se não tiver /assets no caminho, adiciona
-    if (!fixedPath.includes('/assets/')) {
-        return '/assets/img-msc/' + fixedPath.split('/').pop();
-    }
+    // Remove caracteres problemáticos do nome do arquivo
+    const cleanFilename = filename
+        .replace(/ /g, '-')
+        .replace(/%20/g, '-')
+        .replace(/[^a-z0-9\-_.]/g, '');
+    
+    // Retorna caminho padrão com o nome limpo
+    const fixedPath = `/assets/img-msc/${cleanFilename}`;
+    console.log(`📁 Caminho corrigido: ${fixedPath}`);
     
     return fixedPath;
 }
 
-// Função para verificar se uma imagem existe
+// Função MELHORADA para verificar se uma imagem existe
 function checkImageExists(url, callback) {
     const img = new Image();
     img.onload = function() {
+        console.log(`✅ Imagem encontrada: ${url}`);
         callback(true);
     };
     img.onerror = function() {
+        console.log(`❌ Imagem não encontrada: ${url}`);
         callback(false);
     };
-    img.src = url;
+    // Adiciona timestamp para evitar cache
+    img.src = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
 }
 
-// Função para pré-carregar imagens importantes
+// Função MELHORADA para handleImageError
+function handleImageError(img) {
+    console.warn(`⚠️ Erro ao carregar imagem: ${img.src}`);
+    
+    // Previne loop infinito
+    img.onerror = null;
+    
+    const originalSrc = img.getAttribute('data-original-src') || img.src;
+    console.log(`🔍 Tentando alternativas para: ${originalSrc}`);
+    
+    // Estratégias de fallback em ordem
+    const fallbackStrategies = [
+        // 1. Tenta apenas o nome do arquivo na pasta padrão
+        () => {
+            const filename = originalSrc.split('/').pop().toLowerCase().replace(/ /g, '-');
+            return `/assets/img-msc/${filename}`;
+        },
+        
+        // 2. Tenta imagem padrão
+        () => '/assets/default-exercise.gif',
+        
+        // 3. Placeholder online como último recurso
+        () => 'https://placehold.co/300x200/CCCCCC/666666.png?text=Exerc%C3%ADcio'
+    ];
+    
+    let currentTry = 0;
+    
+    function tryNextStrategy() {
+        if (currentTry >= fallbackStrategies.length) {
+            console.log('📦 Todas as estratégias falharam');
+            // Aplica estilo para indicar imagem faltando
+            img.style.backgroundColor = '#f0f0f0';
+            img.style.border = '2px dashed #ccc';
+            img.alt = 'Imagem não disponível';
+            return;
+        }
+        
+        const nextSrc = fallbackStrategies[currentTry]();
+        console.log(`🔄 Tentativa ${currentTry + 1}: ${nextSrc}`);
+        
+        // Testa se a imagem existe
+        checkImageExists(nextSrc, function(exists) {
+            if (exists) {
+                console.log(`✅ Carregando: ${nextSrc}`);
+                img.src = nextSrc;
+            } else {
+                currentTry++;
+                setTimeout(tryNextStrategy, 50);
+            }
+        });
+    }
+    
+    // Aplica estilo de loading
+    img.style.opacity = '0.5';
+    img.style.transition = 'opacity 0.3s';
+    
+    tryNextStrategy();
+}
+
+// Função MELHORADA para pré-carregar imagens
 function preloadImportantImages() {
+    console.log('🖼️ Pré-carregando imagens importantes...');
+    
     const importantImages = [
         '/assets/default-exercise.gif',
         '/assets/img-msc/peito/supino-reto.gif',
         '/assets/img-msc/peito/supino-inclinado.gif'
     ];
     
+    let loaded = 0;
+    let total = importantImages.length;
+    
     importantImages.forEach(src => {
         const img = new Image();
-        img.src = src;
+        
+        img.onload = function() {
+            loaded++;
+            console.log(`✅ (${loaded}/${total}) Pré-carregada: ${src}`);
+        };
+        
+        img.onerror = function() {
+            console.warn(`⚠️ Falha ao pré-carregar: ${src}`);
+        };
+        
+        // Adiciona timestamp para evitar cache
+        img.src = src + '?preload=' + Date.now();
+    });
+}
+
+// Função MELHORADA para verificar estrutura do servidor
+function checkServerStructure() {
+    console.log("🔍 Verificando estrutura do servidor...");
+    
+    // Testa múltiplas imagens para diagnosticar o problema
+    const testImages = [
+        { url: '/assets/default-exercise.gif', desc: 'Imagem padrão' },
+        { url: '/assets/img-msc/peito/supino-reto.gif', desc: 'Exemplo peito' },
+        { url: '/assets/', desc: 'Pasta assets' },
+        { url: '/assets/img-msc/', desc: 'Pasta img-msc' }
+    ];
+    
+    testImages.forEach((test, index) => {
+        if (test.url.endsWith('/')) {
+            // Testa se é uma pasta (tenta acessar)
+            fetch(test.url, { method: 'HEAD' })
+                .then(response => {
+                    console.log(response.ok ? 
+                        `✅ (${index + 1}/${testImages.length}) ${test.desc}: Acessível` :
+                        `⚠️ (${index + 1}/${testImages.length}) ${test.desc}: Não acessível`
+                    );
+                })
+                .catch(() => {
+                    console.log(`❌ (${index + 1}/${testImages.length}) ${test.desc}: Erro ao acessar`);
+                });
+        } else {
+            // Testa imagem
+            checkImageExists(test.url, function(exists) {
+                console.log(exists ? 
+                    `✅ (${index + 1}/${testImages.length}) ${test.desc}: Encontrada` :
+                    `❌ (${index + 1}/${testImages.length}) ${test.desc}: Não encontrada`
+                );
+            });
+        }
+    });
+}
+
+// ADICIONE esta função para diagnosticar o problema
+function diagnoseImageProblem() {
+    console.group('🔧 DIAGNÓSTICO DE IMAGENS');
+    
+    // Testa URLs específicas
+    const testUrls = [
+        '/assets/default-exercise.gif',
+        '/assets/img-msc/peito/supino-reto.gif',
+        '/assets/img-msc/costas/pulley-aberto.gif',
+        '/assets/img-msc/perna/agachamento-livre.gif'
+    ];
+    
+    testUrls.forEach((url, i) => {
+        const img = new Image();
+        img.onload = () => console.log(`✅ ${i+1}. ${url} - OK (${img.width}x${img.height})`);
+        img.onerror = () => {
+            console.log(`❌ ${i+1}. ${url} - FALHA`);
+            
+            // Tenta diagnosticar o tipo de erro
+            fetch(url, { method: 'HEAD' })
+                .then(response => {
+                    console.log(`   Status: ${response.status} ${response.statusText}`);
+                    if (response.status === 404) {
+                        console.log('   💡 ERRO 404: Arquivo não existe no servidor');
+                    } else if (response.status === 403) {
+                        console.log('   💡 ERRO 403: Permissão negada');
+                    }
+                })
+                .catch(error => {
+                    console.log(`   💡 Erro de rede: ${error.message}`);
+                });
+        };
+        img.src = url;
+    });
+    
+    console.groupEnd();
+}
+
+// ADICIONE esta função para testar manualmente (chame no console)
+function testImagePaths() {
+    console.log('🧪 Testando caminhos de imagem:');
+    
+    // Testa alguns caminhos do banco de dados
+    const testPaths = [
+        '/assets/img-msc/peito/supino-reto.gif',
+        'assets/img-msc/peito/supino-reto.gif',
+        'img-msc/peito/supino-reto.gif',
+        '/assets/default-exercise.gif'
+    ];
+    
+    testPaths.forEach(path => {
+        const result = fixImagePath(path);
+        console.log(`Input: "${path}" -> Output: "${result}"`);
+        
+        // Testa se a imagem existe
+        const img = new Image();
+        img.onload = () => console.log(`   ✅ Imagem carrega com sucesso`);
+        img.onerror = () => console.log(`   ❌ Falha ao carregar imagem`);
+        img.src = result;
     });
 }
 
@@ -606,15 +772,36 @@ let remainingRestTime = 90;
 let totalRestTime = 90;
 let currentCategory = "todos";
 
-// Inicialização
+// Inicialização - MODIFICADA
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🏋️‍♂️ NextTreino Iniciando...");
     
+    // Adiciona estilos CSS para melhor visualização
+    const style = document.createElement('style');
+    style.textContent = `
+        .exercise-image {
+            transition: opacity 0.5s ease !important;
+        }
+        .image-error {
+            border: 2px dashed #ff6b6b !important;
+            background: #ffeaea !important;
+        }
+        .image-loading {
+            opacity: 0.5 !important;
+        }
+        .exercise-card-image img,
+        .carousel-slide img,
+        .favorite-card-image img {
+            transition: opacity 0.5s ease !important;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Verifica estrutura do servidor
+    checkServerStructure();
+    
     // Pré-carrega imagens importantes
     preloadImportantImages();
-    
-    // Verifica a estrutura do servidor
-    checkServerStructure();
     
     // Carrega dados salvos
     loadSavedData();
@@ -626,6 +813,12 @@ document.addEventListener('DOMContentLoaded', function() {
     updateHomePage();
     
     console.log("✅ NextTreino Pronto!");
+    
+    // Executa diagnóstico após 2 segundos
+    setTimeout(() => {
+        console.log("🔍 Executando diagnóstico de imagens...");
+        diagnoseImageProblem();
+    }, 2000);
 });
 
 // Nova função para verificar estrutura do servidor
@@ -998,14 +1191,18 @@ function loadExercises() {
         card.className = `exercise-card ${isSelected ? 'selected' : ''}`;
         card.dataset.id = exercise.id;
         
-        // USANDO fixImagePath para garantir caminho correto
-        const imagePath = fixImagePath(exercise.image);
+        // USANDO caminho DIRETO do banco de dados (já está correto)
+        const imagePath = exercise.image; // Não use fixImagePath aqui
         
         card.innerHTML = `
             <div class="exercise-card-image">
-                <img src="${imagePath}" alt="${exercise.name}" loading="lazy"
+                <img src="${imagePath}" 
+                     alt="${exercise.name}" 
+                     loading="lazy"
+                     onload="this.style.opacity='1'"
                      onerror="handleImageError(this)"
-                     data-original-src="${exercise.image}">
+                     data-original-src="${imagePath}"
+                     style="opacity: 0.8; transition: opacity 0.5s ease;">
                 <div class="exercise-card-overlay">
                     <i class="fas fa-check"></i>
                 </div>
@@ -1022,6 +1219,10 @@ function loadExercises() {
         
         card.addEventListener('click', () => toggleExerciseSelection(exercise));
         grid.appendChild(card);
+        
+        // Pré-carrega a imagem
+        const img = new Image();
+        img.src = imagePath;
     });
 }
 
@@ -1383,13 +1584,21 @@ function updateTrainingCarousel() {
         const slide = document.createElement('div');
         slide.className = `carousel-slide ${index === currentExerciseIndex ? 'active' : ''}`;
         
-        // USANDO fixImagePath
-        const imagePath = fixImagePath(exercise.image);
+        // Usa caminho DIRETO do exercício
+        const imagePath = exercise.image;
         
         slide.innerHTML = `
-            <img src="${imagePath}" alt="${exercise.name}" class="exercise-image"
-                 onerror="handleImageError(this)"
-                 data-original-src="${exercise.image}">
+            <div class="carousel-image-container">
+                <img src="${imagePath}" 
+                     alt="${exercise.name}" 
+                     class="exercise-image"
+                     loading="lazy"
+                     onload="this.style.opacity='1'"
+                     onerror="handleImageError(this)"
+                     data-original-src="${imagePath}"
+                     style="opacity: 0.8; transition: opacity 0.5s ease;">
+                <div class="image-loading-indicator" style="display: none;">Carregando...</div>
+            </div>
             <div class="slide-overlay">
                 <h3>${exercise.name}</h3>
                 <p>${exercise.muscle}</p>
@@ -1633,13 +1842,18 @@ function updateFavoritesPage() {
         const card = document.createElement('div');
         card.className = 'favorite-card';
         
-        // USANDO fixImagePath
-        const imagePath = fixImagePath(exercise.image);
+        // Usa caminho DIRETO
+        const imagePath = exercise.image;
         
         card.innerHTML = `
             <div class="favorite-card-image">
-                <img src="${imagePath}" alt="${exercise.name}"
-                     onerror="handleImageError(this)">
+                <img src="${imagePath}" 
+                     alt="${exercise.name}"
+                     loading="lazy"
+                     onload="this.style.opacity='1'"
+                     onerror="handleImageError(this)"
+                     data-original-src="${imagePath}"
+                     style="opacity: 0.8; transition: opacity 0.5s ease;">
                 <div class="favorite-overlay">
                     <i class="fas fa-bookmark"></i>
                 </div>
