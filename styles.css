@@ -16,6 +16,11 @@
     --gray: #000000;
     --gray-light: #F8F9FC;
     --gray-dark: #68768F;
+
+    /* Novas cores para status de treino */
+    --completed: #2CCF6D;
+    --completed-light: rgba(44, 207, 109, 0.15);
+    --completed-dark: #25b85f;
     
     /* Sombras */
     --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
@@ -1640,5 +1645,4 @@ html, body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--gray-dark);
-
 }
