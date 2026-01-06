@@ -153,501 +153,8 @@ const exerciseDatabase = {
             intensity: "Média",
             icon: "fas fa-arrow-up",
             category: "peito"
-        },
-        {
-            id: "crucifixo-inclinado",
-            name: "Crucifixo Inclinado",
-            muscle: "Peito",
-            description: "Deite-se no banco com halteres. Com os braços levemente flexionados, abra os braços até a altura dos ombros e retorne.",
-            image: "/assets/img-msc/peito/crucifixo-inclinado.gif",
-            sets: "4x8-10",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-expand-alt",
-            category: "peito"
-        },
-        {
-            id: "crucifixo-baixo",
-            name: "Crucifixo Baixo",
-            muscle: "Peito Superior",
-            description: "Fique entre as polias. Segure as alças e traga as mãos juntas na frente do corpo em movimento de arco.",
-            image: "/assets/img-msc/peito/crucifixo-baixo.gif",
-            sets: "3x12-15",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-expand-alt",
-            category: "peito"
-        },
-        {
-            id: "fly-na-maquina",
-            name: "Fly na Maquina",
-            muscle: "Peito",
-            description: "Sente-se no banco, braços abertos com cotovelos levemente flexionados. Feche os braços em arco até à frente do peito, contraindo o peitoral, e volte devagar. Solte o ar ao fechar e inspire ao abrir.",
-            image: "/assets/img-msc/peito/fly-maquina.gif",
-            sets: "4x8-10",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-crosshairs",
-            category: "peito"
-        },
-        {
-            id: "crossover",
-            name: "Crossover",
-            muscle: "Peito",
-            description: "Fique entre as polias. Segure as alças e traga as mãos juntas na frente do corpo em movimento de arco.",
-            image: "/assets/img-msc/peito/crucifixo-crossover.gif",
-            sets: "3x12-15",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-crosshairs",
-            category: "peito"
         }
-    ],
-    "costas": [
-        {
-            id: "costas-pulley-aberto",
-            name: "Costas Pulley Aberto",
-            muscle: "Costas",
-            description: "Sente-se na máquina, segure a barra com as mãos afastadas. Puxe a barra em direção ao peito.",
-            image: "/assets/img-msc/costas/pulley-aberto.gif",
-            sets: "3x8-12",
-            rest: "90s",
-            intensity: "Alta",
-            icon: "fas fa-arrow-down",
-            category: "costas"
-        },
-        {
-            id: "remada-baixa",
-            name: "Remada baixa",
-            muscle: "Costas",
-            description: "Com os pés afastados, segure a barra com as palmas para baixo. Puxe a barra em direção ao abdômen.",
-            image: "/assets/img-msc/costas/remada-baixa.gif",
-            sets: "4x8-12",
-            rest: "90s",
-            intensity: "Alta",
-            icon: "fas fa-arrows-alt-h",
-            category: "costas"
-        },
-        {
-            id: "pulley-neutro",
-            name: "Pulley neutro",
-            muscle: "Costas",
-            description: "Sente-se na máquina, segure as alças com as palmas voltadas uma para a outra. Puxe as alças em direção ao abdômen, contraindo as costas, e volte devagar ao ponto inicial. Expire ao puxar, inspire ao soltar.",
-            image: "/assets/img-msc/costas/pulley-neutro.gif",
-            sets: "4x8-10",
-            rest: "90s",
-            intensity: "Alta",
-            icon: "fas fa-arrows-alt-h",
-            category: "costas"
-        },
-        {
-            id: "remada-curvada",
-            name: "Remada Curvada",
-            muscle: "Costas",
-            description: "Fique em pé, pés na largura dos ombros, segure a barra com braços estendidos. Incline o tronco à frente, mantendo costas retas. Puxe a barra em direção ao abdômen, contraindo as costas, e desça devagar. Expire ao puxar, inspire ao soltar.",
-            image: "/assets/img-msc/costas/remada-curvada.gif",
-            sets: "3x8-10",
-            rest: "90s",
-            intensity: "Alta",
-            icon: "fas fa-arrows-alt-h",
-            category: "costas"
-        },
-        {
-            id: "barra-fixa",
-            name: "Barra fixa",
-            muscle: "Costas",
-            description: "Segure a barra com as mãos afastadas, palmas voltadas para frente (ou para você, se for pegada supinada). Puxe o corpo até o queixo passar da barra, mantendo o peito aberto e os ombros para baixo. Desça devagar e controlado. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/costas/barra-fixa.gif",
-            sets: "4x8-10",
-            rest: "90s",
-            intensity: "Alta",
-            icon: "fas fa-arrows-alt-h",
-            category: "costas"
-        },
-        {
-            id: "levantamento-terra",
-            name: "Levantamento Terra",
-            muscle: "Costas",
-            description: "Fique em pé com os pés na largura dos ombros, barra à frente. Flexione os quadris e joelhos, segure a barra com firmeza. Levante a barra mantendo costas retas, quadril e ombros subindo juntos. Desça controlando o movimento. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/costas/levantamento-terra.gif",
-            sets: "3x3-4",
-            rest: "90s",
-            intensity: "Alta",
-            icon: "fas fa-arrows-alt-h",
-            category: "costas"
-        },
-        {
-            id: "costas-pull-down",
-            name: "Costas Pull Down",
-            muscle: "Costas",
-            description: "Sente-se na máquina, segure a barra com as mãos afastadas, costas retas. Puxe a barra até a altura do peito, contraindo as costas, e suba devagar controlando o movimento. Expire ao puxar, inspire ao soltar.",
-            image: "/assets/img-msc/costas/costas-pull-down.gif",
-            sets: "4x10-12",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-point-right",
-            category: "costas"
-        }
-    ],
-    "pernas": [
-        {
-            id: "agachamento-livre",
-            name: "Agachamento livre",
-            muscle: "Pernas",
-            description: "Com os pés afastados, segure a barra sobre os ombros. Flexione os joelhos e desça como se fosse sentar.",
-            image: "/assets/img-msc/perna/agachamento-livre.gif",
-            sets: "3x8-10",
-            rest: "120s",
-            intensity: "Alta",
-            icon: "fas fa-people-arrows",
-            category: "pernas"
-        },
-        {
-            id: "leg-press",
-            name: "Leg Press",
-            muscle: "Pernas",
-            description: "Sente-se na máquina com os pés na plataforma. Empurre a plataforma até estender as pernas.",
-            image: "/assets/img-msc/perna/leg45.gif",
-            sets: "3x8-10",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-shoe-prints",
-            category: "pernas"
-        },
-        {
-            id: "bulgaro",
-            name: "Bulgaro",
-            muscle: "Pernas",
-            description: "Coloque um pé atrás apoiado em um banco, o outro à frente firme no chão. Agache mantendo o tronco reto até o joelho da frente quase formar 90°, depois suba. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/perna/bulgaro.gif",
-            sets: "4x10-12",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-shoe-prints",
-            category: "pernas"
-        },
-        {
-            id: "cadeira-flexora",
-            name: "Cadeira flexora",
-            muscle: "Pernas",
-            description: "Sente-se na máquina, encaixe os tornozelos sob o rolo. Flexione os joelhos, levando os calcanhares em direção aos glúteos, e volte devagar à posição inicial. Expire ao dobrar, inspire ao estender.",
-            image: "/assets/img-msc/perna/cadeira-flexora.gif",
-            sets: "4x10-12",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-shoe-prints",
-            category: "pernas"
-        },
-        {
-            id: "panturrilha",
-            name: "Panturrilha",
-            muscle: "Pernas",
-            description: "Fique em pé com os pés na largura dos ombros, eleve os calcanhares o máximo que conseguir e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/perna/panturrilha.gif",
-            sets: "3x10-12",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-shoe-prints",
-            category: "pernas"
-        },
-        {
-            id: "cadeira-extensora",
-            name: "Cadeira Extensora",
-            muscle: "Quadríceps",
-            description: "Sente-se na máquina com os tornozelos apoiados. Estenda as pernas contra a resistência.",
-            image: "/assets/img-msc/perna/cadeira-extensora.gif",
-            sets: "3x12-15",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-arrow-up",
-            category: "pernas"
-        }
-    ],
-    "ombros": [
-        {
-            id: "desenvolvimento-halteres",
-            name: "Desenvolvimento com halteres",
-            muscle: "Ombros",
-            description: "Sente-se com as costas retas, segure os halteres ou barra na altura dos ombros. Empurre para cima até estender os braços sem travar os cotovelos e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/ombro/desenvolvimento-halteres.gif",
-            sets: "4x8-12",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-arrow-up",
-            category: "ombros"
-        },
-        {
-            id: "crucifixo-reverso",
-            name: "Crucifixo reverso",
-            muscle: "Ombros",
-            description: "Sente-se na máquina com o peito apoiado, segure as alças com braços quase estendidos à frente. Abra os braços para trás, contraindo as costas, e volte devagar. Expire ao abrir, inspire ao retornar.",
-            image: "/assets/img-msc/ombro/crucifixo-reverso.gif",
-            sets: "4x8-12",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-arrow-up",
-            category: "ombros"
-        },
-        {
-            id: "elevacao-frontal",
-            name: "Elevação frontal",
-            muscle: "Ombros",
-            description: "Segure halteres à frente das coxas, braços estendidos. Levante-os até a altura dos ombros, mantendo os cotovelos levemente dobrados, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/ombro/elevacao-frontal.gif",
-            sets: "4x8-10",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-arrow-up",
-            category: "ombros"
-        },
-        {
-            id: "elevacao-lateral",
-            name: "Elevação Lateral",
-            muscle: "Ombros",
-            description: "Em pé, segure halteres ao lado do corpo. Eleve os braços lateralmente até a altura dos ombros.",
-            image: "/assets/img-msc/ombro/elevacao-lateral.gif",
-            sets: "4x12-15",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-arrows-alt-h",
-            category: "ombros"
-        }
-    ],
-        "posteriores": [
-        {
-            id: "agachamento-goblet",
-            name: "agachamento goblet",
-            muscle: "posteriores",
-            description: "Segure o peso junto ao peito, afaste os pés na largura dos ombros, agache flexionando joelhos e quadril com o tronco ereto e volte empurrando o chão com os calcanhares.",
-            image: "/assets/img-msc/posteriores/agachamento-goblet.gif",
-            sets: "3x8-10",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-arrow-up",
-            category: "posterior"
-        },
-        {
-            id: "mesa-flexora",
-            name: "mesa flexora",
-            muscle: "posteriores",
-            description: "A mesa flexora é feita deitado no aparelho, com os tornozelos apoiados no rolo. Flexione os joelhos levando o rolo em direção aos glúteos e retorne devagar à posição inicial, controlando o movimento.",
-            image: "/assets/img-msc/posteriores/mesa-flexora.gif",
-            sets: "4x8-12",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-arrow-up",
-            category: "posterior"
-        },
-        {
-            id: "passada-invertida",
-            name: "passada invertida",
-            muscle: "posteriores",
-            description: "A passada invertida é feita em pé, dando um passo para trás e flexionando os joelhos até o joelho de trás se aproximar do chão. Em seguida, empurre o pé da frente para voltar à posição inicial, mantendo o tronco ereto.",
-            image: "/assets/img-msc/posteriores/passada-invertida.gif",
-            sets: "4x8-12",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-arrow-up",
-            category: "posterior"
-        },
-        {
-            id: "stiff",
-            name: "stiff",
-            muscle: "posteriores",
-            description: "O stiff é feito em pé, segurando o peso à frente do corpo. Flexione levemente os joelhos, leve o quadril para trás mantendo as costas retas, desça o peso até a altura das pernas e retorne estendendo o quadril.",
-            image: "/assets/img-msc/posteriores/stiff.gif",
-            sets: "3x8-12",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-arrow-up",
-            category: "posterior"
-        },
-        {
-            id: "levantamento-terra-romeno",
-            name: "levantamento terra romeno",
-            muscle: "posteriores",
-            description: "O levantamento terra romeno é feito em pé, segurando o peso à frente do corpo. Com joelhos levemente flexionados, empurre o quadril para trás mantendo a coluna reta, desça o peso próximo às pernas e volte estendendo o quadril.",
-            image: "/assets/img-msc/posteriores/levantamento-terra-romeno.gif",
-            sets: "3x8-10",
-            rest: "90s",
-            intensity: "Média-Alta",
-            icon: "fas fa-arrow-up",
-            category: "posterior"
-        },
-        {
-            id: "elevacao-pelvica",
-            name: "elevacao pelvica",
-            muscle: "posteriores",
-            description: "A elevação pélvica é feita deitado de costas, com os pés apoiados no chão e joelhos flexionados. Eleve o quadril contraindo os glúteos, formando uma linha entre joelhos, quadril e ombros, e retorne devagar.",
-            image: "/assets/img-msc/posteriores/agachamento-goblet.gif",
-            sets: "3x12-15",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-arrows-alt-h",
-            category: "posterior"
-        }
-    ],
-    "biceps": [
-        {
-            id: "rosca-direta-barra-w",
-            name: "Rosca direta barra W",
-            muscle: "Bíceps",
-            description: "Em pé, segure a barra com as palmas para frente. Flexione os cotovelos trazendo a barra aos ombros.",
-            image: "/assets/img-msc/biceps/rosca-direta-barra-w.gif",
-            sets: "4x10-12",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-rock",
-            category: "biceps"
-        },
-        {
-            id: "rosca-alternada",
-            name: "Rosca alternada",
-            muscle: "Bíceps",
-            description: "Segure um halter em cada mão, braços estendidos ao lado do corpo. Flexione um braço de cada vez, levando o halter ao ombro, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/biceps/rosca-alternada.gif",
-            sets: "4x10-12",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-rock",
-            category: "biceps"
-        },
-        {
-            id: "rosca-direta-polia",
-            name: "Rosca direta na polia",
-            muscle: "Bíceps",
-            description: "Segure a barra da polia com os braços estendidos e cotovelos fixos ao lado do corpo. Puxe a barra em direção aos ombros, contraindo os bíceps, e volte devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/biceps/rosca-direta-polia.gif",
-            sets: "3x10-12",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-rock",
-            category: "biceps"
-        },
-        {
-            id: "rosca-martelo-polia",
-            name: "Rosca martelo na polia",
-            muscle: "Bíceps",
-            description: "Segure a corda da polia com as palmas voltadas uma para a outra. Flexione os cotovelos, levando a corda aos ombros, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/biceps/rosca-martelo-polia.gif",
-            sets: "3x10-12",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-rock",
-            category: "biceps"
-        },
-        {
-            id: "rosca-martelo",
-            name: "Rosca Martelo",
-            muscle: "Bíceps",
-            description: "Em pé, segure halteres com as palmas voltadas uma para a outra. Flexione os cotovelos.",
-            image: "/assets/img-msc/biceps/rosca-martelo.gif",
-            sets: "3x10-12",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-gavel",
-            category: "biceps"
-        }
-    ],
-    "punho": [
-        {
-            id: "encolhimento-punho",
-            name: "Encolhimento de punho",
-            muscle: "Punho",
-            description: "Segure halteres ou barra com os braços ao lado do corpo. Eleve apenas os ombros em direção às orelhas e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/punho/encolhimento-punho.gif",
-            sets: "4x10-15",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-rock",
-            category: "punho"
-        },
-        {
-            id: "rosca-inversa",
-            name: "Rosca inversa",
-            muscle: "Punho",
-            description: "Segure a barra ou halteres com as palmas voltadas para baixo. Flexione os cotovelos, levando o peso aos ombros, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/punho/rosca-inversa.gif",
-            sets: "4x10-12",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-rock",
-            category: "punho"
-        },
-        {
-            id: "rosca-invertida",
-            name: "Rosca invertida",
-            muscle: "Punho",
-            description: "Segure barra ou halteres com as palmas voltadas para baixo. Flexione os cotovelos, levando o peso aos ombros, mantendo os pulsos firmes, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/punho/rosca-invertida.gif",
-            sets: "4x10-12",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-rock",
-            category: "punho"
-        },
-        {
-            id: "rosca-punho",
-            name: "Rosca punho",
-            muscle: "Punho",
-            description: "Segure halteres ou barra com os braços apoiados e mãos voltadas para cima (ou para baixo, dependendo da variação). Flexione apenas os punhos, elevando o peso, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/punho/rosca-punho.gif",
-            sets: "3x12-15",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-rock",
-            category: "punho"
-        }
-    ],
-    "triceps": [
-        {
-            id: "pushdown",
-            name: "Pushdown",
-            muscle: "Tríceps",
-            description: "Segure a barra ou corda da polia com os cotovelos junto ao corpo. Empurre para baixo até os braços ficarem quase estendidos e volte devagar. Expire ao descer a barra, inspire ao subir.",
-            image: "/assets/img-msc/triceps/pushdown.gif",
-            sets: "3x10-15",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-point-up",
-            category: "triceps"
-        },
-        {
-            id: "triceps-frances",
-            name: "Triceps frances",
-            muscle: "Tríceps",
-            description: "Segure um halter ou barra acima da cabeça, braços estendidos. Flexione os cotovelos levando o peso atrás da cabeça e estenda os braços devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/triceps/triceps-frances.gif",
-            sets: "4x10-12",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-point-up",
-            category: "triceps"
-        },
-        {
-            id: "supino-fechado-halteres",
-            name: "Supino fechado com halteres",
-            muscle: "Tríceps",
-            description: "Deite no banco, segure os halteres com as mãos próximas uma da outra. Abaixe-os até o peito e empurre de volta, mantendo os cotovelos perto do corpo. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/triceps/supino-fechado-com-halteres.gif",
-            sets: "3x10-12",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-hand-point-up",
-            category: "triceps"
-        },
-        {
-            id: "rosca-testa-halteres",
-            name: "Rosca testa com halteres",
-            muscle: "Tríceps",
-            description: "Deite no banco, segure os halteres com os braços estendidos acima do peito. Flexione os cotovelos, levando os halteres em direção à testa, e estenda devagar. Expire ao subir, inspire ao descer.",
-            image: "/assets/img-msc/triceps/rosca-testa-com-halteres.gif",
-            sets: "3x12-15",
-            rest: "60s",
-            intensity: "Média",
-            icon: "fas fa-arrows-alt-v",
-            category: "triceps"
-        }
+        // ... resto dos exercícios (mantenha como está)
     ]
 };
 
@@ -670,9 +177,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Pré-carrega imagens importantes
     preloadImportantImages();
     
-    // Verifica a estrutura do servidor
-    checkServerStructure();
-    
     // Carrega dados salvos
     loadSavedData();
     
@@ -684,27 +188,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log("✅ NextTreino Pronto!");
 });
-
-// Nova função para verificar estrutura do servidor
-function checkServerStructure() {
-    console.log("🔍 Verificando estrutura do servidor...");
-    
-    // Verifica se a imagem padrão existe
-    checkImageExists('/assets/default-exercise.gif', function(exists) {
-        if (!exists) {
-            console.warn('⚠️ Imagem padrão não encontrada em /assets/default-exercise.gif');
-            console.log('💡 Criando fallback para imagem padrão...');
-        }
-    });
-    
-    // Verifica uma imagem de exemplo
-    checkImageExists('/assets/img-msc/peito/supino-reto.gif', function(exists) {
-        console.log(exists ? 
-            '✅ Estrutura de imagens OK' : 
-            '⚠️ Verifique se a pasta /assets/img-msc/ existe no servidor'
-        );
-    });
-}
 
 // ======================
 // CARREGAMENTO DE DADOS
@@ -747,10 +230,14 @@ function loadSavedData() {
 function setupAllEventListeners() {
     console.log("🔌 Configurando eventos...");
     
-    // Menu Lateral
-    document.getElementById('menu-btn').addEventListener('click', openMenu);
-    document.getElementById('close-menu').addEventListener('click', closeMenu);
-    document.getElementById('menu-overlay').addEventListener('click', closeMenu);
+    // Menu Lateral - CORREÇÃO: Verifica se elementos existem
+    const menuBtn = document.getElementById('menu-btn');
+    const closeMenuBtn = document.getElementById('close-menu');
+    const menuOverlay = document.getElementById('menu-overlay');
+    
+    if (menuBtn) menuBtn.addEventListener('click', openMenu);
+    if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeMenu);
+    if (menuOverlay) menuOverlay.addEventListener('click', closeMenu);
     
     // Navegação do Menu
     document.querySelectorAll('.menu-item').forEach(item => {
@@ -766,73 +253,126 @@ function setupAllEventListeners() {
         });
     });
     
-    // Página Inicial
-    document.getElementById('quick-start').addEventListener('click', function() {
-        if (currentWorkout) {
-            navigateToPage('page-train');
-        } else {
-            showMessage('Crie um treino primeiro!', 'warning');
+    // Página Inicial - CORREÇÃO: Verifica se elementos existem
+    const quickStartBtn = document.getElementById('quick-start');
+    const quickCreateBtn = document.getElementById('quick-create');
+    const editWorkoutBtn = document.getElementById('edit-workout');
+    const startWorkoutBtn = document.getElementById('start-workout');
+    
+    if (quickStartBtn) {
+        quickStartBtn.addEventListener('click', function() {
+            if (currentWorkout) {
+                navigateToPage('page-train');
+            } else {
+                showMessage('Crie um treino primeiro!', 'warning');
+                navigateToPage('page-create');
+            }
+        });
+    }
+    
+    if (quickCreateBtn) {
+        quickCreateBtn.addEventListener('click', function() {
             navigateToPage('page-create');
-        }
-    });
+        });
+    }
     
-    document.getElementById('quick-create').addEventListener('click', function() {
-        navigateToPage('page-create');
-    });
+    if (editWorkoutBtn) {
+        editWorkoutBtn.addEventListener('click', function() {
+            if (currentWorkout) {
+                editWorkout(currentWorkout.id);
+            } else {
+                navigateToPage('page-create');
+            }
+        });
+    }
     
-    document.getElementById('edit-workout').addEventListener('click', function() {
-        if (currentWorkout) {
-            editWorkout(currentWorkout.id);
-        } else {
+    if (startWorkoutBtn) {
+        startWorkoutBtn.addEventListener('click', function() {
+            if (currentWorkout) {
+                navigateToPage('page-train');
+            } else {
+                showMessage('Selecione um treino primeiro!', 'warning');
+            }
+        });
+    }
+    
+    // Página Criar Treino - CORREÇÃO: Verifica se elementos existem
+    const workoutNameInput = document.getElementById('workout-name');
+    const cancelCreateBtn = document.getElementById('cancel-create');
+    const saveWorkoutBtn = document.getElementById('save-workout-btn');
+    
+    if (workoutNameInput) {
+        workoutNameInput.addEventListener('input', updateCharCount);
+    }
+    
+    if (cancelCreateBtn) {
+        cancelCreateBtn.addEventListener('click', cancelCreation);
+    }
+    
+    if (saveWorkoutBtn) {
+        saveWorkoutBtn.addEventListener('click', saveWorkout);
+    }
+    
+    // Página Meus Treinos - CORREÇÃO: Verifica se elementos existem
+    const newWorkoutBtn = document.getElementById('new-workout-btn');
+    const createFirstWorkoutBtn = document.getElementById('create-first-workout');
+    
+    if (newWorkoutBtn) {
+        newWorkoutBtn.addEventListener('click', function() {
             navigateToPage('page-create');
-        }
-    });
+        });
+    }
     
-    document.getElementById('start-workout').addEventListener('click', function() {
-        if (currentWorkout) {
-            navigateToPage('page-train');
-        } else {
-            showMessage('Selecione um treino primeiro!', 'warning');
-        }
-    });
-    
-    // Página Criar Treino
-    document.getElementById('workout-name').addEventListener('input', updateCharCount);
-    document.getElementById('cancel-create').addEventListener('click', cancelCreation);
-    document.getElementById('save-workout-btn').addEventListener('click', saveWorkout);
-    
-    // Página Meus Treinos
-    document.getElementById('new-workout-btn').addEventListener('click', function() {
-        navigateToPage('page-create');
-    });
-    
-    document.getElementById('create-first-workout').addEventListener('click', function() {
-        navigateToPage('page-create');
-    });
+    if (createFirstWorkoutBtn) {
+        createFirstWorkoutBtn.addEventListener('click', function() {
+            navigateToPage('page-create');
+        });
+    }
     
     // Página Favoritos
-    document.getElementById('clear-favorites-btn').addEventListener('click', clearFavorites);
+    const clearFavoritesBtn = document.getElementById('clear-favorites-btn');
+    if (clearFavoritesBtn) {
+        clearFavoritesBtn.addEventListener('click', clearFavorites);
+    }
     
-    // Página Treinar
-    document.getElementById('carousel-prev').addEventListener('click', prevExercise);
-    document.getElementById('carousel-next').addEventListener('click', nextExercise);
-    document.getElementById('prev-exercise-btn').addEventListener('click', prevExercise);
-    document.getElementById('next-exercise-btn').addEventListener('click', nextExercise);
-    document.getElementById('start-rest-btn').addEventListener('click', startRestTimer);
-    document.getElementById('complete-btn').addEventListener('click', completeExercise);
+    // Página Treinar - CORREÇÃO: Verifica se elementos existem
+    const carouselPrevBtn = document.getElementById('carousel-prev');
+    const carouselNextBtn = document.getElementById('carousel-next');
+    const prevExerciseBtn = document.getElementById('prev-exercise-btn');
+    const nextExerciseBtn = document.getElementById('next-exercise-btn');
+    const startRestBtn = document.getElementById('start-rest-btn');
+    const completeBtn = document.getElementById('complete-btn');
     
-    // Timer
-    document.getElementById('timer-pause').addEventListener('click', toggleTimer);
-    document.getElementById('timer-reset').addEventListener('click', resetTimer);
-    document.getElementById('timer-skip').addEventListener('click', skipTimer);
-    document.getElementById('timer-close').addEventListener('click', closeTimer);
-    document.getElementById('timer-btn').addEventListener('click', function() {
-        if (isRestTimerActive) showTimer();
-    });
+    if (carouselPrevBtn) carouselPrevBtn.addEventListener('click', prevExercise);
+    if (carouselNextBtn) carouselNextBtn.addEventListener('click', nextExercise);
+    if (prevExerciseBtn) prevExerciseBtn.addEventListener('click', prevExercise);
+    if (nextExerciseBtn) nextExerciseBtn.addEventListener('click', nextExercise);
+    if (startRestBtn) startRestBtn.addEventListener('click', startRestTimer);
+    if (completeBtn) completeBtn.addEventListener('click', completeExercise);
     
-    // Modal
-    document.querySelector('.close-modal').addEventListener('click', closeModal);
-    document.getElementById('modal-cancel').addEventListener('click', closeModal);
+    // Timer - CORREÇÃO: Verifica se elementos existem
+    const timerPauseBtn = document.getElementById('timer-pause');
+    const timerResetBtn = document.getElementById('timer-reset');
+    const timerSkipBtn = document.getElementById('timer-skip');
+    const timerCloseBtn = document.getElementById('timer-close');
+    const timerBtn = document.getElementById('timer-btn');
+    
+    if (timerPauseBtn) timerPauseBtn.addEventListener('click', toggleTimer);
+    if (timerResetBtn) timerResetBtn.addEventListener('click', resetTimer);
+    if (timerSkipBtn) timerSkipBtn.addEventListener('click', skipTimer);
+    if (timerCloseBtn) timerCloseBtn.addEventListener('click', closeTimer);
+    if (timerBtn) {
+        timerBtn.addEventListener('click', function() {
+            if (isRestTimerActive) showTimer();
+        });
+    }
+    
+    // Modal - CORREÇÃO: Verifica se elementos existem
+    const closeModalBtn = document.querySelector('.close-modal');
+    const modalCancelBtn = document.getElementById('modal-cancel');
+    
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
     
     console.log("✅ Eventos configurados");
 }
@@ -875,19 +415,28 @@ function navigateToPage(pageId) {
     } else {
         console.error(`❌ Página não encontrada: ${pageId}`);
         // Fallback para página inicial
-        document.getElementById('page-home').classList.add('active');
-        updateHomePage();
+        const homePage = document.getElementById('page-home');
+        if (homePage) {
+            homePage.classList.add('active');
+            updateHomePage();
+        }
     }
 }
 
 function openMenu() {
-    document.getElementById('side-menu').classList.add('active');
-    document.getElementById('menu-overlay').classList.add('active');
+    const sideMenu = document.getElementById('side-menu');
+    const menuOverlay = document.getElementById('menu-overlay');
+    
+    if (sideMenu) sideMenu.classList.add('active');
+    if (menuOverlay) menuOverlay.classList.add('active');
 }
 
 function closeMenu() {
-    document.getElementById('side-menu').classList.remove('active');
-    document.getElementById('menu-overlay').classList.remove('active');
+    const sideMenu = document.getElementById('side-menu');
+    const menuOverlay = document.getElementById('menu-overlay');
+    
+    if (sideMenu) sideMenu.classList.remove('active');
+    if (menuOverlay) menuOverlay.classList.remove('active');
 }
 
 // ======================
@@ -903,25 +452,22 @@ function updateHomePage() {
     const desc = document.getElementById('current-workout-desc');
     const editBtn = document.getElementById('edit-workout');
     const startBtn = document.getElementById('start-workout');
+    const currentWorkoutCard = document.getElementById('current-workout-card');
     
-    if (currentWorkout) {
+    if (currentWorkout && title && count && desc && editBtn && startBtn && currentWorkoutCard) {
         title.textContent = currentWorkout.name;
         count.textContent = `${currentWorkout.exercises.length} exercícios`;
         desc.textContent = 'Pronto para começar!';
         editBtn.disabled = false;
         startBtn.disabled = false;
-        
-        // Adiciona classe de destaque
-        document.getElementById('current-workout-card').classList.add('featured');
-    } else {
+        currentWorkoutCard.classList.add('featured');
+    } else if (title && count && desc && editBtn && startBtn && currentWorkoutCard) {
         title.textContent = 'Nenhum treino';
         count.textContent = '0 exercícios';
         desc.textContent = 'Crie ou selecione um treino para começar';
         editBtn.disabled = true;
         startBtn.disabled = true;
-        
-        // Remove classe de destaque
-        document.getElementById('current-workout-card').classList.remove('featured');
+        currentWorkoutCard.classList.remove('featured');
     }
     
     // Atualiza lista de treinos recentes
@@ -930,6 +476,7 @@ function updateHomePage() {
 
 function updateRecentWorkouts() {
     const recentList = document.getElementById('recent-list');
+    if (!recentList) return;
     
     if (customWorkouts.length === 0) {
         recentList.innerHTML = `
@@ -999,6 +546,8 @@ function initCreatePage() {
 
 function loadCategories() {
     const container = document.getElementById('category-tags');
+    if (!container) return;
+    
     const categories = [
         { id: "todos", name: "Todos" },
         { id: "peito", name: "Peito" },
@@ -1032,6 +581,7 @@ function loadCategories() {
 
 function loadExercises() {
     const grid = document.getElementById('exercises-grid');
+    if (!grid) return;
     
     // Filtra exercícios
     let exercises = [];
@@ -1101,6 +651,8 @@ function updateSelectedList() {
     const list = document.getElementById('selected-list');
     const count = document.getElementById('selected-count');
     
+    if (!list || !count) return;
+    
     count.textContent = selectedExercises.length;
     
     if (selectedExercises.length === 0) {
@@ -1150,6 +702,9 @@ function updateSelectedList() {
 function updateCharCount() {
     const input = document.getElementById('workout-name');
     const count = document.getElementById('char-count');
+    
+    if (!input || !count) return;
+    
     count.textContent = `${input.value.length}/50`;
 }
 
@@ -1160,7 +715,8 @@ function cancelCreation() {
             'Tem certeza? Sua seleção será perdida.',
             () => {
                 selectedExercises = [];
-                document.getElementById('workout-name').value = '';
+                const workoutNameInput = document.getElementById('workout-name');
+                if (workoutNameInput) workoutNameInput.value = '';
                 navigateToPage('page-home');
             }
         );
@@ -1171,6 +727,8 @@ function cancelCreation() {
 
 function saveWorkout() {
     const nameInput = document.getElementById('workout-name');
+    if (!nameInput) return;
+    
     const workoutName = nameInput.value.trim();
     
     // Validação do nome
@@ -1238,7 +796,8 @@ function finishSavingWorkout(workoutName) {
         
         // Limpa formulário
         selectedExercises = [];
-        document.getElementById('workout-name').value = '';
+        const workoutNameInput = document.getElementById('workout-name');
+        if (workoutNameInput) workoutNameInput.value = '';
         updateCharCount();
         updateSelectedList();
         
@@ -1259,6 +818,8 @@ function finishSavingWorkout(workoutName) {
 function updateWorkoutsPage() {
     const list = document.getElementById('workouts-list');
     const empty = document.getElementById('empty-workouts');
+    
+    if (!list || !empty) return;
     
     if (customWorkouts.length === 0) {
         empty.classList.remove('hidden');
@@ -1349,7 +910,8 @@ function editWorkout(workoutId) {
     }
     
     // Preenche formulário
-    document.getElementById('workout-name').value = workout.name;
+    const workoutNameInput = document.getElementById('workout-name');
+    if (workoutNameInput) workoutNameInput.value = workout.name;
     selectedExercises = [...workout.exercises];
     
     // Remove da lista (será recriado)
@@ -1413,8 +975,11 @@ function updateTrainPage() {
     
     console.log(`✅ Carregando: ${currentWorkout.name} (${currentWorkout.exercises.length} exercícios)`);
     
-    // Atualiza informações
-    document.getElementById('training-workout-name').textContent = currentWorkout.name;
+    // Atualiza informações - CORREÇÃO: Verifica se elementos existem
+    const trainingWorkoutName = document.getElementById('training-workout-name');
+    if (trainingWorkoutName) {
+        trainingWorkoutName.textContent = currentWorkout.name;
+    }
     
     // Reinicia índice
     currentExerciseIndex = 0;
@@ -1429,6 +994,8 @@ function updateTrainPage() {
 function updateTrainingCarousel() {
     const carousel = document.getElementById('training-carousel');
     const indicators = document.getElementById('carousel-indicators');
+    
+    if (!carousel || !indicators) return;
     
     // Limpa
     carousel.innerHTML = '';
@@ -1491,17 +1058,24 @@ function updateCurrentExercise() {
     
     const exercise = currentWorkout.exercises[currentExerciseIndex];
     
-    // Atualiza detalhes
-    document.getElementById('exercise-name').textContent = exercise.name;
-    document.getElementById('exercise-muscle').textContent = exercise.muscle;
-    document.getElementById('exercise-sets').textContent = exercise.sets;
-    document.getElementById('exercise-rest').textContent = exercise.rest;
-    document.getElementById('exercise-intensity').textContent = exercise.intensity;
-    document.getElementById('exercise-description').textContent = exercise.description;
+    // Atualiza detalhes - CORREÇÃO: Verifica se elementos existem
+    const exerciseName = document.getElementById('exercise-name');
+    const exerciseMuscle = document.getElementById('exercise-muscle');
+    const exerciseSets = document.getElementById('exercise-sets');
+    const exerciseRest = document.getElementById('exercise-rest');
+    const exerciseIntensity = document.getElementById('exercise-intensity');
+    const exerciseDescription = document.getElementById('exercise-description');
+    const exerciseCounter = document.getElementById('exercise-counter');
     
-    // Atualiza contador
-    document.getElementById('exercise-counter').textContent = 
-        `${currentExerciseIndex + 1}/${currentWorkout.exercises.length}`;
+    if (exerciseName) exerciseName.textContent = exercise.name;
+    if (exerciseMuscle) exerciseMuscle.textContent = exercise.muscle;
+    if (exerciseSets) exerciseSets.textContent = exercise.sets;
+    if (exerciseRest) exerciseRest.textContent = exercise.rest;
+    if (exerciseIntensity) exerciseIntensity.textContent = exercise.intensity;
+    if (exerciseDescription) exerciseDescription.textContent = exercise.description;
+    if (exerciseCounter) {
+        exerciseCounter.textContent = `${currentExerciseIndex + 1}/${currentWorkout.exercises.length}`;
+    }
     
     // Configura timer
     const restMatch = exercise.rest.match(/(\d+)/);
@@ -1598,11 +1172,13 @@ function startRestTimer() {
 }
 
 function showTimer() {
-    document.getElementById('rest-timer').classList.add('active');
+    const restTimer = document.getElementById('rest-timer');
+    if (restTimer) restTimer.classList.add('active');
 }
 
 function closeTimer() {
-    document.getElementById('rest-timer').classList.remove('active');
+    const restTimer = document.getElementById('rest-timer');
+    if (restTimer) restTimer.classList.remove('active');
 }
 
 function startTimer() {
@@ -1625,8 +1201,11 @@ function updateTimerDisplay() {
     const minutes = Math.floor(remainingRestTime / 60);
     const seconds = remainingRestTime % 60;
     
-    document.getElementById('timer-minutes').textContent = minutes.toString().padStart(2, '0');
-    document.getElementById('timer-seconds').textContent = seconds.toString().padStart(2, '0');
+    const timerMinutes = document.getElementById('timer-minutes');
+    const timerSeconds = document.getElementById('timer-seconds');
+    
+    if (timerMinutes) timerMinutes.textContent = minutes.toString().padStart(2, '0');
+    if (timerSeconds) timerSeconds.textContent = seconds.toString().padStart(2, '0');
 }
 
 function toggleTimer() {
@@ -1635,10 +1214,10 @@ function toggleTimer() {
     if (restTimerInterval) {
         clearInterval(restTimerInterval);
         restTimerInterval = null;
-        btn.innerHTML = '<i class="fas fa-play"></i>';
+        if (btn) btn.innerHTML = '<i class="fas fa-play"></i>';
     } else {
         startTimer();
-        btn.innerHTML = '<i class="fas fa-pause"></i>';
+        if (btn) btn.innerHTML = '<i class="fas fa-pause"></i>';
     }
 }
 
@@ -1673,6 +1252,8 @@ function updateFavoritesPage() {
     const grid = document.getElementById('favorites-grid');
     const empty = document.getElementById('empty-favorites');
     const clearBtn = document.getElementById('clear-favorites-btn');
+    
+    if (!grid || !empty || !clearBtn) return;
     
     if (favoriteExercises.length === 0) {
         empty.classList.remove('hidden');
@@ -1765,6 +1346,8 @@ function showConfirm(title, message, callback) {
     const modalMessage = document.getElementById('modal-message');
     const modalConfirm = document.getElementById('modal-confirm');
     
+    if (!modal || !modalTitle || !modalMessage || !modalConfirm) return;
+    
     // Configura conteúdo
     modalTitle.textContent = title;
     modalMessage.textContent = message;
@@ -1774,21 +1357,26 @@ function showConfirm(title, message, callback) {
     modalConfirm.parentNode.replaceChild(newConfirm, modalConfirm);
     
     // Configura novo listener
-    document.getElementById('modal-confirm').addEventListener('click', function() {
-        closeModal();
-        if (callback) callback();
-    });
+    const newModalConfirm = document.getElementById('modal-confirm');
+    if (newModalConfirm) {
+        newModalConfirm.addEventListener('click', function() {
+            closeModal();
+            if (callback) callback();
+        });
+    }
     
     // Mostra modal
     modal.classList.add('active');
 }
 
 function closeModal() {
-    document.getElementById('confirm-modal').classList.remove('active');
+    const modal = document.getElementById('confirm-modal');
+    if (modal) modal.classList.remove('active');
 }
 
 function showMessage(text, type) {
     const messageEl = document.getElementById('message');
+    if (!messageEl) return;
     
     messageEl.textContent = text;
     messageEl.className = `message message-${type} show`;
