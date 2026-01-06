@@ -2,14 +2,19 @@
 function fixImagePath(path) {
     if (!path) return '/assets/default-exercise.gif';
     
+    console.log(`🔧 Corrigindo caminho: ${path}`);
+    
     // Remove espaços e caracteres problemáticos
     let fixedPath = path.replace(/ /g, '-');
     
     // Se ainda tiver %20, substitui por -
     fixedPath = fixedPath.replace(/%20/g, '-');
     
-    // Converte para minúsculas (ajuda com problemas de case sensitivity)
+    // Converte para minúsculas (problema comum em servidores Linux)
     fixedPath = fixedPath.toLowerCase();
+    
+    // Remove caracteres especiais
+    fixedPath = fixedPath.replace(/[^a-zA-Z0-9\-_./]/g, '');
     
     // Corrige problemas comuns de caminho
     if (fixedPath.includes('img-msc')) {
@@ -18,44 +23,111 @@ function fixImagePath(path) {
         fixedPath = fixedPath.replace('img msc', 'img-msc');
     }
     
-    // Garante que começa com /assets
-    if (!fixedPath.startsWith('/assets')) {
-        if (fixedPath.startsWith('assets')) {
-            fixedPath = '/' + fixedPath;
-        } else {
-            fixedPath = '/assets/' + fixedPath;
-        }
+    // Garante que não tenha barras duplas
+    fixedPath = fixedPath.replace(/\/+/g, '/');
+    
+    // Se o caminho já começar com /assets/, mantém
+    if (fixedPath.startsWith('/assets/')) {
+        return fixedPath;
+    }
+    
+    // Se começar com assets/, adiciona a barra inicial
+    if (fixedPath.startsWith('assets/')) {
+        return '/' + fixedPath;
+    }
+    
+    // Se não tiver /assets no caminho, adiciona
+    if (!fixedPath.includes('/assets/')) {
+        return '/assets/img-msc/' + fixedPath.split('/').pop();
     }
     
     return fixedPath;
 }
 
-// Função para tratamento de erros de imagem
 function handleImageError(img) {
     console.warn(`⚠️ Erro ao carregar imagem: ${img.src}`);
     img.onerror = null; // Previne loop infinito
     
-    // Tenta carregar uma versão alternativa
-    const originalSrc = img.src;
+    const originalSrc = img.getAttribute('data-original-src') || img.src;
+    const filename = originalSrc.split('/').pop();
+    const serverBase = window.location.origin;
     
-    // Se falhou com caminho corrigido, tenta o caminho original
-    if (originalSrc.includes('/assets/')) {
-        // Tenta caminho relativo
-        img.src = originalSrc.replace('/assets/', 'assets/');
+    // Estratégias de fallback em ordem de tentativa
+    const fallbackStrategies = [
+        // 1. Tenta caminho original (não modificado)
+        originalSrc,
         
-        // Se ainda falhar, usa imagem padrão
-        setTimeout(() => {
-            if (img.naturalWidth === 0) {
-                img.src = '/assets/default-exercise.gif';
-                img.style.backgroundColor = '#f0f0f0';
-                img.style.padding = '20px';
-                img.alt = 'Imagem não disponível';
-            }
-        }, 100);
+        // 2. Tenta com caminho absoluto
+        serverBase + originalSrc,
+        
+        // 3. Tenta apenas o nome do arquivo na estrutura padrão (minúsculo)
+        '/assets/img-msc/' + filename.toLowerCase(),
+        
+        // 4. Tenta estrutura alternativa
+        '/assets/img-msc/default/' + filename.toLowerCase(),
+        
+        // 5. Imagem padrão
+        '/assets/default-exercise.gif'
+    ];
+    
+    let currentTry = 0;
+    const maxTries = fallbackStrategies.length;
+    
+    function tryNextStrategy() {
+        if (currentTry >= maxTries) {
+            console.log('📦 Todas as estratégias falharam, usando imagem padrão');
+            img.src = '/assets/default-exercise.gif';
+            img.style.backgroundColor = '#f0f0f0';
+            img.alt = 'Imagem não disponível';
+            return;
+        }
+        
+        const nextSrc = fallbackStrategies[currentTry];
+        console.log(`🔄 Tentativa ${currentTry + 1}/${maxTries}: ${nextSrc}`);
+        
+        const testImg = new Image();
+        testImg.onload = function() {
+            console.log(`✅ Sucesso: ${nextSrc}`);
+            img.src = nextSrc;
+        };
+        testImg.onerror = function() {
+            currentTry++;
+            // Espera um pouco antes da próxima tentativa
+            setTimeout(tryNextStrategy, 100);
+        };
+        testImg.src = nextSrc;
     }
+    
+    tryNextStrategy();
 }
 
-// Base de dados de exercícios com caminhos CORRIGIDOS
+// Função para verificar se uma imagem existe
+function checkImageExists(url, callback) {
+    const img = new Image();
+    img.onload = function() {
+        callback(true);
+    };
+    img.onerror = function() {
+        callback(false);
+    };
+    img.src = url;
+}
+
+// Função para pré-carregar imagens importantes
+function preloadImportantImages() {
+    const importantImages = [
+        '/assets/default-exercise.gif',
+        '/assets/img-msc/peito/supino-reto.gif',
+        '/assets/img-msc/peito/supino-inclinado.gif'
+    ];
+    
+    importantImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+}
+
+// Base de dados de exercícios com caminhos PADRÃO e CONSISTENTES
 const exerciseDatabase = {
     "peito": [
         {
@@ -63,7 +135,7 @@ const exerciseDatabase = {
             name: "Supino Reto",
             muscle: "Peito",
             description: "Deitando-se em um banco, com os pés apoiados no chão. Segure a barra com as mãos um pouco mais abertas que os ombros, desça até o peito e depois empurre para cima, estendendo os braços. Mantenha o corpo firme e controle a respiração.",
-            image: "assets/img-msc/peito/supino-reto.gif",
+            image: "/assets/img-msc/peito/supino-reto.gif",
             sets: "4x8-10",
             rest: "60-90s",
             intensity: "Média-Alta",
@@ -75,7 +147,7 @@ const exerciseDatabase = {
             name: "Supino Inclinado",
             muscle: "Peito Superior",
             description: "Deite-se no banco inclinado. Segure a barra com as mãos afastadas. Desça a barra até o peito superior e empurre para cima.",
-            image: "assets/img-msc/peito/supino-inclinado.gif",
+            image: "/assets/img-msc/peito/supino-inclinado.gif",
             sets: "4x8-12",
             rest: "90s",
             intensity: "Média",
@@ -87,7 +159,7 @@ const exerciseDatabase = {
             name: "Crucifixo Inclinado",
             muscle: "Peito",
             description: "Deite-se no banco com halteres. Com os braços levemente flexionados, abra os braços até a altura dos ombros e retorne.",
-            image: "assets/img-msc/peito/crucifixo-inclinado.gif",
+            image: "/assets/img-msc/peito/crucifixo-inclinado.gif",
             sets: "4x8-10",
             rest: "60s",
             intensity: "Média",
@@ -99,7 +171,7 @@ const exerciseDatabase = {
             name: "Crucifixo Baixo",
             muscle: "Peito Superior",
             description: "Fique entre as polias. Segure as alças e traga as mãos juntas na frente do corpo em movimento de arco.",
-            image: "assets/img-msc/peito/crucifixo-baixo.gif",
+            image: "/assets/img-msc/peito/crucifixo-baixo.gif",
             sets: "3x12-15",
             rest: "60s",
             intensity: "Média",
@@ -111,7 +183,7 @@ const exerciseDatabase = {
             name: "Fly na Maquina",
             muscle: "Peito",
             description: "Sente-se no banco, braços abertos com cotovelos levemente flexionados. Feche os braços em arco até à frente do peito, contraindo o peitoral, e volte devagar. Solte o ar ao fechar e inspire ao abrir.",
-            image: "assets/img-msc/peito/fly-maquina.gif",
+            image: "/assets/img-msc/peito/fly-maquina.gif",
             sets: "4x8-10",
             rest: "60s",
             intensity: "Média",
@@ -123,7 +195,7 @@ const exerciseDatabase = {
             name: "Crossover",
             muscle: "Peito",
             description: "Fique entre as polias. Segure as alças e traga as mãos juntas na frente do corpo em movimento de arco.",
-            image: "assets/img-msc/peito/crucifixo-crossover.gif",
+            image: "/assets/img-msc/peito/crucifixo-crossover.gif",
             sets: "3x12-15",
             rest: "60s",
             intensity: "Média",
@@ -137,7 +209,7 @@ const exerciseDatabase = {
             name: "Costas Pulley Aberto",
             muscle: "Costas",
             description: "Sente-se na máquina, segure a barra com as mãos afastadas. Puxe a barra em direção ao peito.",
-            image: "assets/img-msc/costas/pulley-aberto.gif",
+            image: "/assets/img-msc/costas/pulley-aberto.gif",
             sets: "3x8-12",
             rest: "90s",
             intensity: "Alta",
@@ -149,7 +221,7 @@ const exerciseDatabase = {
             name: "Remada baixa",
             muscle: "Costas",
             description: "Com os pés afastados, segure a barra com as palmas para baixo. Puxe a barra em direção ao abdômen.",
-            image: "assets/img-msc/costas/remada-baixa.gif",
+            image: "/assets/img-msc/costas/remada-baixa.gif",
             sets: "4x8-12",
             rest: "90s",
             intensity: "Alta",
@@ -161,7 +233,7 @@ const exerciseDatabase = {
             name: "Pulley neutro",
             muscle: "Costas",
             description: "Sente-se na máquina, segure as alças com as palmas voltadas uma para a outra. Puxe as alças em direção ao abdômen, contraindo as costas, e volte devagar ao ponto inicial. Expire ao puxar, inspire ao soltar.",
-            image: "assets/img-msc/costas/pulley-neutro.gif",
+            image: "/assets/img-msc/costas/pulley-neutro.gif",
             sets: "4x8-10",
             rest: "90s",
             intensity: "Alta",
@@ -173,7 +245,7 @@ const exerciseDatabase = {
             name: "Remada Curvada",
             muscle: "Costas",
             description: "Fique em pé, pés na largura dos ombros, segure a barra com braços estendidos. Incline o tronco à frente, mantendo costas retas. Puxe a barra em direção ao abdômen, contraindo as costas, e desça devagar. Expire ao puxar, inspire ao soltar.",
-            image: "assets/img-msc/costas/remada-curvada.gif",
+            image: "/assets/img-msc/costas/remada-curvada.gif",
             sets: "3x8-10",
             rest: "90s",
             intensity: "Alta",
@@ -185,7 +257,7 @@ const exerciseDatabase = {
             name: "Barra fixa",
             muscle: "Costas",
             description: "Segure a barra com as mãos afastadas, palmas voltadas para frente (ou para você, se for pegada supinada). Puxe o corpo até o queixo passar da barra, mantendo o peito aberto e os ombros para baixo. Desça devagar e controlado. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/costas/barra-fixa.gif",
+            image: "/assets/img-msc/costas/barra-fixa.gif",
             sets: "4x8-10",
             rest: "90s",
             intensity: "Alta",
@@ -197,7 +269,7 @@ const exerciseDatabase = {
             name: "Levantamento Terra",
             muscle: "Costas",
             description: "Fique em pé com os pés na largura dos ombros, barra à frente. Flexione os quadris e joelhos, segure a barra com firmeza. Levante a barra mantendo costas retas, quadril e ombros subindo juntos. Desça controlando o movimento. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/costas/levantamento-terra.gif",
+            image: "/assets/img-msc/costas/levantamento-terra.gif",
             sets: "3x3-4",
             rest: "90s",
             intensity: "Alta",
@@ -209,7 +281,7 @@ const exerciseDatabase = {
             name: "Costas Pull Down",
             muscle: "Costas",
             description: "Sente-se na máquina, segure a barra com as mãos afastadas, costas retas. Puxe a barra até a altura do peito, contraindo as costas, e suba devagar controlando o movimento. Expire ao puxar, inspire ao soltar.",
-            image: "assets/img-msc/costas/costas-pull-down.gif",
+            image: "/assets/img-msc/costas/costas-pull-down.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -223,7 +295,7 @@ const exerciseDatabase = {
             name: "Agachamento livre",
             muscle: "Pernas",
             description: "Com os pés afastados, segure a barra sobre os ombros. Flexione os joelhos e desça como se fosse sentar.",
-            image: "assets/img-msc/perna/agachamento-livre.gif",
+            image: "/assets/img-msc/perna/agachamento-livre.gif",
             sets: "3x8-10",
             rest: "120s",
             intensity: "Alta",
@@ -235,7 +307,7 @@ const exerciseDatabase = {
             name: "Leg Press",
             muscle: "Pernas",
             description: "Sente-se na máquina com os pés na plataforma. Empurre a plataforma até estender as pernas.",
-            image: "assets/img-msc/perna/leg45.gif",
+            image: "/assets/img-msc/perna/leg45.gif",
             sets: "3x8-10",
             rest: "90s",
             intensity: "Média-Alta",
@@ -247,7 +319,7 @@ const exerciseDatabase = {
             name: "Bulgaro",
             muscle: "Pernas",
             description: "Coloque um pé atrás apoiado em um banco, o outro à frente firme no chão. Agache mantendo o tronco reto até o joelho da frente quase formar 90°, depois suba. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/perna/bulgaro.gif",
+            image: "/assets/img-msc/perna/bulgaro.gif",
             sets: "4x10-12",
             rest: "90s",
             intensity: "Média-Alta",
@@ -259,7 +331,7 @@ const exerciseDatabase = {
             name: "Cadeira flexora",
             muscle: "Pernas",
             description: "Sente-se na máquina, encaixe os tornozelos sob o rolo. Flexione os joelhos, levando os calcanhares em direção aos glúteos, e volte devagar à posição inicial. Expire ao dobrar, inspire ao estender.",
-            image: "assets/img-msc/perna/cadeira-flexora.gif",
+            image: "/assets/img-msc/perna/cadeira-flexora.gif",
             sets: "4x10-12",
             rest: "90s",
             intensity: "Média-Alta",
@@ -271,7 +343,7 @@ const exerciseDatabase = {
             name: "Panturrilha",
             muscle: "Pernas",
             description: "Fique em pé com os pés na largura dos ombros, eleve os calcanhares o máximo que conseguir e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/perna/panturrilha.gif",
+            image: "/assets/img-msc/perna/panturrilha.gif",
             sets: "3x10-12",
             rest: "90s",
             intensity: "Média-Alta",
@@ -283,7 +355,7 @@ const exerciseDatabase = {
             name: "Cadeira Extensora",
             muscle: "Quadríceps",
             description: "Sente-se na máquina com os tornozelos apoiados. Estenda as pernas contra a resistência.",
-            image: "assets/img-msc/perna/cadeira-extensora.gif",
+            image: "/assets/img-msc/perna/cadeira-extensora.gif",
             sets: "3x12-15",
             rest: "60s",
             intensity: "Média",
@@ -297,7 +369,7 @@ const exerciseDatabase = {
             name: "Desenvolvimento com halteres",
             muscle: "Ombros",
             description: "Sente-se com as costas retas, segure os halteres ou barra na altura dos ombros. Empurre para cima até estender os braços sem travar os cotovelos e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/ombro/desenvolvimento-halteres.gif",
+            image: "/assets/img-msc/ombro/desenvolvimento-halteres.gif",
             sets: "4x8-12",
             rest: "90s",
             intensity: "Média-Alta",
@@ -309,7 +381,7 @@ const exerciseDatabase = {
             name: "Crucifixo reverso",
             muscle: "Ombros",
             description: "Sente-se na máquina com o peito apoiado, segure as alças com braços quase estendidos à frente. Abra os braços para trás, contraindo as costas, e volte devagar. Expire ao abrir, inspire ao retornar.",
-            image: "assets/img-msc/ombro/crucifixo-reverso.gif",
+            image: "/assets/img-msc/ombro/crucifixo-reverso.gif",
             sets: "4x8-12",
             rest: "90s",
             intensity: "Média-Alta",
@@ -321,7 +393,7 @@ const exerciseDatabase = {
             name: "Elevação frontal",
             muscle: "Ombros",
             description: "Segure halteres à frente das coxas, braços estendidos. Levante-os até a altura dos ombros, mantendo os cotovelos levemente dobrados, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/ombro/elevacao-frontal.gif",
+            image: "/assets/img-msc/ombro/elevacao-frontal.gif",
             sets: "4x8-10",
             rest: "90s",
             intensity: "Média-Alta",
@@ -333,12 +405,86 @@ const exerciseDatabase = {
             name: "Elevação Lateral",
             muscle: "Ombros",
             description: "Em pé, segure halteres ao lado do corpo. Eleve os braços lateralmente até a altura dos ombros.",
-            image: "assets/img-msc/ombro/elevacao-lateral.gif",
+            image: "/assets/img-msc/ombro/elevacao-lateral.gif",
             sets: "4x12-15",
             rest: "60s",
             intensity: "Média",
             icon: "fas fa-arrows-alt-h",
             category: "ombros"
+        }
+    ],
+        "posteriores": [
+        {
+            id: "agachamento-goblet",
+            name: "agachamento goblet",
+            muscle: "posteriores",
+            description: "Segure o peso junto ao peito, afaste os pés na largura dos ombros, agache flexionando joelhos e quadril com o tronco ereto e volte empurrando o chão com os calcanhares.",
+            image: "/assets/img-msc/posteriores/agachamento-goblet.gif",
+            sets: "3x8-10",
+            rest: "90s",
+            intensity: "Média-Alta",
+            icon: "fas fa-arrow-up",
+            category: "posterior"
+        },
+        {
+            id: "mesa-flexora",
+            name: "mesa flexora",
+            muscle: "posteriores",
+            description: "A mesa flexora é feita deitado no aparelho, com os tornozelos apoiados no rolo. Flexione os joelhos levando o rolo em direção aos glúteos e retorne devagar à posição inicial, controlando o movimento.",
+            image: "/assets/img-msc/posteriores/mesa-flexora.gif",
+            sets: "4x8-12",
+            rest: "90s",
+            intensity: "Média-Alta",
+            icon: "fas fa-arrow-up",
+            category: "posterior"
+        },
+        {
+            id: "passada-invertida",
+            name: "passada invertida",
+            muscle: "posteriores",
+            description: "A passada invertida é feita em pé, dando um passo para trás e flexionando os joelhos até o joelho de trás se aproximar do chão. Em seguida, empurre o pé da frente para voltar à posição inicial, mantendo o tronco ereto.",
+            image: "/assets/img-msc/posteriores/passada-invertida.gif",
+            sets: "4x8-12",
+            rest: "90s",
+            intensity: "Média-Alta",
+            icon: "fas fa-arrow-up",
+            category: "posterior"
+        },
+        {
+            id: "stiff",
+            name: "stiff",
+            muscle: "posteriores",
+            description: "O stiff é feito em pé, segurando o peso à frente do corpo. Flexione levemente os joelhos, leve o quadril para trás mantendo as costas retas, desça o peso até a altura das pernas e retorne estendendo o quadril.",
+            image: "/assets/img-msc/posteriores/stiff.gif",
+            sets: "3x8-12",
+            rest: "90s",
+            intensity: "Média-Alta",
+            icon: "fas fa-arrow-up",
+            category: "posterior"
+        },
+        {
+            id: "levantamento-terra-romeno",
+            name: "levantamento terra romeno",
+            muscle: "posteriores",
+            description: "O levantamento terra romeno é feito em pé, segurando o peso à frente do corpo. Com joelhos levemente flexionados, empurre o quadril para trás mantendo a coluna reta, desça o peso próximo às pernas e volte estendendo o quadril.",
+            image: "/assets/img-msc/posteriores/levantamento-terra-romeno.gif",
+            sets: "3x8-10",
+            rest: "90s",
+            intensity: "Média-Alta",
+            icon: "fas fa-arrow-up",
+            category: "posterior"
+        },
+        {
+            id: "elevacao-pelvica",
+            name: "elevacao pelvica",
+            muscle: "posteriores",
+            description: "A elevação pélvica é feita deitado de costas, com os pés apoiados no chão e joelhos flexionados. Eleve o quadril contraindo os glúteos, formando uma linha entre joelhos, quadril e ombros, e retorne devagar.",
+            image: "/assets/img-msc/posteriores/agachamento-goblet.gif",
+            sets: "3x12-15",
+            rest: "60s",
+            intensity: "Média",
+            icon: "fas fa-arrows-alt-h",
+            category: "posterior"
         }
     ],
     "biceps": [
@@ -347,7 +493,7 @@ const exerciseDatabase = {
             name: "Rosca direta barra W",
             muscle: "Bíceps",
             description: "Em pé, segure a barra com as palmas para frente. Flexione os cotovelos trazendo a barra aos ombros.",
-            image: "assets/img-msc/biceps/Rosca-diretabarra-W.gif",
+            image: "/assets/img-msc/biceps/rosca-direta-barra-w.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -359,7 +505,7 @@ const exerciseDatabase = {
             name: "Rosca alternada",
             muscle: "Bíceps",
             description: "Segure um halter em cada mão, braços estendidos ao lado do corpo. Flexione um braço de cada vez, levando o halter ao ombro, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/biceps/rosca-alternada.gif",
+            image: "/assets/img-msc/biceps/rosca-alternada.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -371,7 +517,7 @@ const exerciseDatabase = {
             name: "Rosca direta na polia",
             muscle: "Bíceps",
             description: "Segure a barra da polia com os braços estendidos e cotovelos fixos ao lado do corpo. Puxe a barra em direção aos ombros, contraindo os bíceps, e volte devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/biceps/rosca-direta-polia.gif",
+            image: "/assets/img-msc/biceps/rosca-direta-polia.gif",
             sets: "3x10-12",
             rest: "60s",
             intensity: "Média",
@@ -383,7 +529,7 @@ const exerciseDatabase = {
             name: "Rosca martelo na polia",
             muscle: "Bíceps",
             description: "Segure a corda da polia com as palmas voltadas uma para a outra. Flexione os cotovelos, levando a corda aos ombros, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/biceps/rosca-martelo-polia.gif",
+            image: "/assets/img-msc/biceps/rosca-martelo-polia.gif",
             sets: "3x10-12",
             rest: "60s",
             intensity: "Média",
@@ -395,7 +541,7 @@ const exerciseDatabase = {
             name: "Rosca Martelo",
             muscle: "Bíceps",
             description: "Em pé, segure halteres com as palmas voltadas uma para a outra. Flexione os cotovelos.",
-            image: "assets/img-msc/biceps/rosca-martelo.gif",
+            image: "/assets/img-msc/biceps/rosca-martelo.gif",
             sets: "3x10-12",
             rest: "60s",
             intensity: "Média",
@@ -409,7 +555,7 @@ const exerciseDatabase = {
             name: "Encolhimento de punho",
             muscle: "Punho",
             description: "Segure halteres ou barra com os braços ao lado do corpo. Eleve apenas os ombros em direção às orelhas e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/punho/encolhimento-punho.gif",
+            image: "/assets/img-msc/punho/encolhimento-punho.gif",
             sets: "4x10-15",
             rest: "60s",
             intensity: "Média",
@@ -421,7 +567,7 @@ const exerciseDatabase = {
             name: "Rosca inversa",
             muscle: "Punho",
             description: "Segure a barra ou halteres com as palmas voltadas para baixo. Flexione os cotovelos, levando o peso aos ombros, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/punho/rosca-inversa.gif",
+            image: "/assets/img-msc/punho/rosca-inversa.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -433,7 +579,7 @@ const exerciseDatabase = {
             name: "Rosca invertida",
             muscle: "Punho",
             description: "Segure barra ou halteres com as palmas voltadas para baixo. Flexione os cotovelos, levando o peso aos ombros, mantendo os pulsos firmes, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/punho/rosca-invertida.gif",
+            image: "/assets/img-msc/punho/rosca-invertida.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -445,7 +591,7 @@ const exerciseDatabase = {
             name: "Rosca punho",
             muscle: "Punho",
             description: "Segure halteres ou barra com os braços apoiados e mãos voltadas para cima (ou para baixo, dependendo da variação). Flexione apenas os punhos, elevando o peso, e desça devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/punho/rosca-punho.gif",
+            image: "/assets/img-msc/punho/rosca-punho.gif",
             sets: "3x12-15",
             rest: "60s",
             intensity: "Média",
@@ -459,7 +605,7 @@ const exerciseDatabase = {
             name: "Pushdown",
             muscle: "Tríceps",
             description: "Segure a barra ou corda da polia com os cotovelos junto ao corpo. Empurre para baixo até os braços ficarem quase estendidos e volte devagar. Expire ao descer a barra, inspire ao subir.",
-            image: "assets/img-msc/triceps/pushdown.gif",
+            image: "/assets/img-msc/triceps/pushdown.gif",
             sets: "3x10-15",
             rest: "60s",
             intensity: "Média",
@@ -471,7 +617,7 @@ const exerciseDatabase = {
             name: "Triceps frances",
             muscle: "Tríceps",
             description: "Segure um halter ou barra acima da cabeça, braços estendidos. Flexione os cotovelos levando o peso atrás da cabeça e estenda os braços devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/triceps/triceps-frances.gif",
+            image: "/assets/img-msc/triceps/triceps-frances.gif",
             sets: "4x10-12",
             rest: "60s",
             intensity: "Média",
@@ -483,7 +629,7 @@ const exerciseDatabase = {
             name: "Supino fechado com halteres",
             muscle: "Tríceps",
             description: "Deite no banco, segure os halteres com as mãos próximas uma da outra. Abaixe-os até o peito e empurre de volta, mantendo os cotovelos perto do corpo. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/triceps/Supino-fechado-com-halteres.gif",
+            image: "/assets/img-msc/triceps/supino-fechado-com-halteres.gif",
             sets: "3x10-12",
             rest: "60s",
             intensity: "Média",
@@ -495,7 +641,7 @@ const exerciseDatabase = {
             name: "Rosca testa com halteres",
             muscle: "Tríceps",
             description: "Deite no banco, segure os halteres com os braços estendidos acima do peito. Flexione os cotovelos, levando os halteres em direção à testa, e estenda devagar. Expire ao subir, inspire ao descer.",
-            image: "assets/img-msc/triceps/Rosca-testa-com-halteres.gif",
+            image: "/assets/img-msc/triceps/rosca-testa-com-halteres.gif",
             sets: "3x12-15",
             rest: "60s",
             intensity: "Média",
@@ -521,6 +667,12 @@ let currentCategory = "todos";
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🏋️‍♂️ NextTreino Iniciando...");
     
+    // Pré-carrega imagens importantes
+    preloadImportantImages();
+    
+    // Verifica a estrutura do servidor
+    checkServerStructure();
+    
     // Carrega dados salvos
     loadSavedData();
     
@@ -530,25 +682,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializa a página inicial
     updateHomePage();
     
-    // Verifica se as imagens existem
-    checkImages();
-    
     console.log("✅ NextTreino Pronto!");
 });
 
-// Função para verificar imagens no console
-function checkImages() {
-    console.log("🔍 Verificando imagens...");
+// Nova função para verificar estrutura do servidor
+function checkServerStructure() {
+    console.log("🔍 Verificando estrutura do servidor...");
+    
+    // Verifica se a imagem padrão existe
+    checkImageExists('/assets/default-exercise.gif', function(exists) {
+        if (!exists) {
+            console.warn('⚠️ Imagem padrão não encontrada em /assets/default-exercise.gif');
+            console.log('💡 Criando fallback para imagem padrão...');
+        }
+    });
     
     // Verifica uma imagem de exemplo
-    const testImage = new Image();
-    testImage.onload = function() {
-        console.log("✅ Imagem padrão carregada com sucesso!");
-    };
-    testImage.onerror = function() {
-        console.warn("⚠️ Não foi possível carregar imagem padrão");
-    };
-    testImage.src = 'assets/img-msc/peito/supino-reto.gif';
+    checkImageExists('/assets/img-msc/peito/supino-reto.gif', function(exists) {
+        console.log(exists ? 
+            '✅ Estrutura de imagens OK' : 
+            '⚠️ Verifique se a pasta /assets/img-msc/ existe no servidor'
+        );
+    });
 }
 
 // ======================
@@ -851,6 +1006,7 @@ function loadCategories() {
         { id: "pernas", name: "Pernas" },
         { id: "ombros", name: "Ombros" },
         { id: "biceps", name: "Bíceps" },
+        { id: "posteriores", name: "Posteriores" },
         { id: "punho", name: "Punho" },
         { id: "triceps", name: "Tríceps" }
     ];
@@ -899,13 +1055,14 @@ function loadExercises() {
         card.className = `exercise-card ${isSelected ? 'selected' : ''}`;
         card.dataset.id = exercise.id;
         
-        // CORREÇÃO: Usa fixImagePath
+        // USANDO fixImagePath para garantir caminho correto
         const imagePath = fixImagePath(exercise.image);
         
         card.innerHTML = `
             <div class="exercise-card-image">
                 <img src="${imagePath}" alt="${exercise.name}" loading="lazy"
-                     onerror="handleImageError(this)">
+                     onerror="handleImageError(this)"
+                     data-original-src="${exercise.image}">
                 <div class="exercise-card-overlay">
                     <i class="fas fa-check"></i>
                 </div>
@@ -994,21 +1151,6 @@ function updateCharCount() {
     const input = document.getElementById('workout-name');
     const count = document.getElementById('char-count');
     count.textContent = `${input.value.length}/50`;
-}
-
-function clearSelection() {
-    if (selectedExercises.length === 0) return;
-    
-    showConfirm(
-        'Limpar seleção',
-        'Tem certeza que deseja remover todos os exercícios selecionados?',
-        () => {
-            selectedExercises = [];
-            updateSelectedList();
-            loadExercises();
-            showMessage('Seleção limpa!', 'info');
-        }
-    );
 }
 
 function cancelCreation() {
@@ -1298,12 +1440,13 @@ function updateTrainingCarousel() {
         const slide = document.createElement('div');
         slide.className = `carousel-slide ${index === currentExerciseIndex ? 'active' : ''}`;
         
-        // CORREÇÃO: Usa fixImagePath
+        // USANDO fixImagePath
         const imagePath = fixImagePath(exercise.image);
         
         slide.innerHTML = `
             <img src="${imagePath}" alt="${exercise.name}" class="exercise-image"
-                 onerror="handleImageError(this)">
+                 onerror="handleImageError(this)"
+                 data-original-src="${exercise.image}">
             <div class="slide-overlay">
                 <h3>${exercise.name}</h3>
                 <p>${exercise.muscle}</p>
@@ -1547,7 +1690,7 @@ function updateFavoritesPage() {
         const card = document.createElement('div');
         card.className = 'favorite-card';
         
-        // CORREÇÃO: Usa fixImagePath
+        // USANDO fixImagePath
         const imagePath = fixImagePath(exercise.image);
         
         card.innerHTML = `
