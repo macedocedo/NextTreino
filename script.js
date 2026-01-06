@@ -4,7 +4,7 @@ function fixImagePath(path) {
     
     console.log(`🔧 Verificando caminho: ${path}`);
     
-    // Se já for um caminho completo (URL ou data URL), mantém
+    // Se já for um caminho completo (URL), mantém
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
         return path;
     }
@@ -36,20 +36,25 @@ function getImageBasePath() {
     const isGitHubPages = window.location.hostname.includes('github.io');
     const currentPath = window.location.pathname;
     
+    console.log('📍 Pathname:', currentPath);
+    
     if (isGitHubPages) {
-        // Extrai o nome do repositório da URL
-        // Formato: https://username.github.io/repo-name/
+        // Para GitHub Pages: https://macedocedo.github.io/NextTreino/
+        // Extrai o nome do repositório
         const pathParts = currentPath.split('/');
         const repoName = pathParts[1] || '';
         
-        if (repoName) {
-            // Remove qualquer coisa após # ou ?
+        if (repoName && repoName !== '') {
             const cleanRepoName = repoName.split(/[?#]/)[0];
+            console.log('📁 Nome do repositório:', cleanRepoName);
             return `/${cleanRepoName}/assets/img-msc/`;
         }
+        
+        // Se não encontrar nome de repositório, usa caminho padrão
+        return '/assets/img-msc/';
     }
     
-    // Para servidor local ou outros casos
+    // Para servidor local
     return '/assets/img-msc/';
 }
 
@@ -59,26 +64,24 @@ function handleImageError(img) {
     
     const originalSrc = img.getAttribute('data-original-src') || img.src;
     const filename = originalSrc.split('/').pop();
+    const basePath = getImageBasePath();
     
-    // Estratégias de fallback em ordem de tentativa
+    console.log(`📂 Arquivo original: ${filename}`);
+    console.log(`📁 Base path: ${basePath}`);
+    
+    // Estratégias de fallback mais simples
     const fallbackStrategies = [
-        // 1. Tenta caminho base atual
-        getImageBasePath() + filename,
+        // 1. Tenta sem a subpasta (talvez o arquivo esteja na raiz de img-msc)
+        basePath + filename,
         
-        // 2. Tenta apenas o nome do arquivo no caminho padrão
-        '/assets/img-msc/' + filename,
+        // 2. Tenta removendo hífens e espaços (normalização de nome)
+        basePath + filename.replace(/-/g, ' ').toLowerCase().replace('.gif', '') + '.gif',
         
-        // 3. Tenta sem o caminho do repositório (para GitHub Pages direto)
-        'assets/img-msc/' + filename,
+        // 3. Fallback para um GIF genérico
+        basePath + 'default-exercise.gif',
         
-        // 4. Remove qualquer subpasta extra
-        function() {
-            const simpleName = filename.split('/').pop();
-            return getImageBasePath() + simpleName;
-        },
-        
-        // 5. Placeholder online como fallback final
-        'https://via.placeholder.com/400x300/2d3748/ffffff?text=' + encodeURIComponent(filename.replace('.gif', '').replace(/-/g, '+'))
+        // 4. Fallback local simples (imagem SVG base64)
+        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzJkMzc0OCIvPjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5FeGVyY8OtY2lvPC90ZXh0Pjwvc3ZnPg=='
     ];
     
     let currentTry = 0;
@@ -86,26 +89,32 @@ function handleImageError(img) {
     
     function tryNextStrategy() {
         if (currentTry >= maxTries) {
-            console.log('📦 Todas as estratégias falharam, usando placeholder');
-            img.src = 'https://via.placeholder.com/400x300/2d3748/ffffff?text=Exercise+Image';
-            img.style.backgroundColor = '#f0f0f0';
-            img.alt = 'Imagem do exercício';
-            img.style.objectFit = 'cover';
+            console.log('📦 Todas as estratégias falharam, usando fallback final');
+            // Fallback final: div com cor de fundo
+            img.style.display = 'none';
+            const parent = img.parentElement;
+            if (parent) {
+                parent.style.backgroundColor = '#2d3748';
+                parent.style.display = 'flex';
+                parent.style.alignItems = 'center';
+                parent.style.justifyContent = 'center';
+                parent.innerHTML = `<div style="color: white; text-align: center; font-family: Arial;">
+                    <div style="font-size: 24px;">🏋️‍♂️</div>
+                    <div>${filename.replace('.gif', '').replace(/-/g, ' ')}</div>
+                </div>`;
+            }
             return;
         }
         
-        let nextSrc = fallbackStrategies[currentTry];
-        if (typeof nextSrc === 'function') {
-            nextSrc = nextSrc();
-        }
-        
-        console.log(`🔄 Tentativa ${currentTry + 1}/${maxTries}: ${nextSrc}`);
+        const nextSrc = fallbackStrategies[currentTry];
+        console.log(`🔄 Tentativa ${currentTry + 1}/${maxTries}: ${nextSrc.substring(0, 100)}...`);
         
         const testImg = new Image();
         testImg.onload = function() {
-            console.log(`✅ Sucesso: ${nextSrc}`);
+            console.log(`✅ Sucesso: ${nextSrc.substring(0, 50)}...`);
             img.src = nextSrc;
             img.style.opacity = '1';
+            img.style.display = 'block';
         };
         testImg.onerror = function() {
             currentTry++;
@@ -210,7 +219,7 @@ const exerciseDatabase = {
             name: "Fly na Maquina",
             muscle: "Peito",
             description: "Sente-se no banco, braços abertos com cotovelos levemente flexionados. Feche os braços em arco até à frente do peito, contraindo o peitoral, e volte devagar. Solte o ar ao fechar e inspire ao abrir.",
-            image: "peito/fly-na-maquina.gif",
+            image: "peito/fly-maquina.gif",
             sets: "4x8-10",
             rest: "60s",
             intensity: "Média",
@@ -690,30 +699,36 @@ let remainingRestTime = 90;
 let totalRestTime = 90;
 let currentCategory = "todos";
 
-// Função para testar caminhos de imagem
-function testImagePaths() {
-    console.log('🔍 Testando caminhos de imagem...');
-    console.log('📍 URL atual:', window.location.href);
-    console.log('📁 Caminho base detectado:', getImageBasePath());
-    console.log('📊 Navegador:', navigator.userAgent);
-    
+// Função para verificar quais imagens estão faltando
+function checkMissingImages() {
+    console.log('🔍 Verificando imagens faltantes...');
     const basePath = getImageBasePath();
-    console.log('🔄 Caminhos que serão testados:');
-    console.log('1. Base:', basePath + 'peito/supino-reto.gif');
-    console.log('2. Com fixImagePath:', fixImagePath('peito/supino-reto.gif'));
+    
+    Object.values(exerciseDatabase).forEach(category => {
+        category.forEach(exercise => {
+            const imgPath = fixImagePath(exercise.image);
+            const img = new Image();
+            img.onload = function() {
+                console.log(`✅ ${exercise.name}: ${imgPath}`);
+            };
+            img.onerror = function() {
+                console.warn(`❌ FALTANDO: ${exercise.name}`);
+                console.log(`   Caminho tentado: ${imgPath}`);
+                console.log(`   Nome do arquivo: ${exercise.image}`);
+            };
+            img.src = imgPath;
+        });
+    });
 }
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🏋️‍♂️ NextTreino Iniciando...");
-    console.log("🌐 Hostname:", window.location.hostname);
-    console.log("📁 Pathname:", window.location.pathname);
+    console.log("🌐 URL completa:", window.location.href);
+    console.log("📁 Caminho base:", getImageBasePath());
     
-    // Testa os caminhos das imagens
-    testImagePaths();
-    
-    // Pré-carrega imagens importantes
-    preloadImportantImages();
+    // Verifica imagens faltantes
+    checkMissingImages();
     
     // Carrega dados salvos
     loadSavedData();
@@ -725,7 +740,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateHomePage();
     
     console.log("✅ NextTreino Pronto!");
-    console.log("📸 As imagens agora usam caminhos reais para os GIFs");
 });
 
 // ======================
@@ -1085,7 +1099,7 @@ function loadExercises() {
                 <img src="${imagePath}" alt="${exercise.name}" loading="lazy"
                      onerror="handleImageError(this)"
                      data-original-src="${exercise.image}"
-                     style="width: 100%; height: 180px; object-fit: cover;">
+                     style="width: 100%; height: 180px;">
                 <div class="exercise-card-overlay">
                     <i class="fas fa-check"></i>
                 </div>
@@ -1721,7 +1735,7 @@ function updateFavoritesPage() {
             <div class="favorite-card-image">
                 <img src="${imagePath}" alt="${exercise.name}"
                      onerror="handleImageError(this)"
-                     style="width: 100%; height: 150px; object-fit: cover;">
+                     style="width: 100%; height: 150px;">
                 <div class="favorite-overlay">
                     <i class="fas fa-bookmark"></i>
                 </div>
