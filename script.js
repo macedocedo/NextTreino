@@ -1,47 +1,24 @@
-// Função para corrigir caminhos de imagem automaticamente
+// Função simplificada para corrigir caminhos de imagem
 function fixImagePath(path) {
     if (!path) return '/assets/default-exercise.gif';
     
-    console.log(`🔧 Corrigindo caminho: ${path}`);
+    console.log(`🔧 Verificando caminho: ${path}`);
     
-    // Remove espaços e caracteres problemáticos
-    let fixedPath = path.replace(/ /g, '-');
-    
-    // Se ainda tiver %20, substitui por -
-    fixedPath = fixedPath.replace(/%20/g, '-');
-    
-    // Converte para minúsculas (problema comum em servidores Linux)
-    fixedPath = fixedPath.toLowerCase();
-    
-    // Remove caracteres especiais
-    fixedPath = fixedPath.replace(/[^a-zA-Z0-9\-_./]/g, '');
-    
-    // Corrige problemas comuns de caminho
-    if (fixedPath.includes('img-msc')) {
-        fixedPath = fixedPath.replace('img-msc', 'img-msc');
-    } else if (fixedPath.includes('img msc')) {
-        fixedPath = fixedPath.replace('img msc', 'img-msc');
+    // Se o caminho já estiver correto, retorna como está
+    if (path.startsWith('/assets/')) {
+        return path;
     }
     
-    // Garante que não tenha barras duplas
-    fixedPath = fixedPath.replace(/\/+/g, '/');
-    
-    // Se o caminho já começar com /assets/, mantém
-    if (fixedPath.startsWith('/assets/')) {
-        return fixedPath;
+    // Se for um caminho relativo sem /assets/, tenta encontrar
+    if (path.includes('img-msc')) {
+        // Extrai o nome do arquivo
+        const filename = path.split('/').pop();
+        const category = path.split('/').slice(-2, -1)[0] || 'default';
+        return `/assets/img-msc/${category}/${filename.toLowerCase()}`;
     }
     
-    // Se começar com assets/, adiciona a barra inicial
-    if (fixedPath.startsWith('assets/')) {
-        return '/' + fixedPath;
-    }
-    
-    // Se não tiver /assets no caminho, adiciona
-    if (!fixedPath.includes('/assets/')) {
-        return '/assets/img-msc/' + fixedPath.split('/').pop();
-    }
-    
-    return fixedPath;
+    // Para qualquer outro caso, usa o caminho fornecido com fallback
+    return path.startsWith('/') ? path : '/assets/img-msc/' + path;
 }
 
 function handleImageError(img) {
@@ -663,9 +640,45 @@ let remainingRestTime = 90;
 let totalRestTime = 90;
 let currentCategory = "todos";
 
+// Função para testar caminhos de imagem
+function testImagePaths() {
+    console.log('🔍 Testando caminhos de imagem...');
+    
+    const testImages = [
+        '/assets/img-msc/peito/supino-reto.gif',
+        '/assets/img-msc/costas/pulley-aberto.gif',
+        '/assets/img-msc/perna/agachamento-livre.gif',
+        '/assets/default-exercise.gif'
+    ];
+    
+    testImages.forEach(src => {
+        const img = new Image();
+        img.onload = function() {
+            console.log(`✅ ${src} - OK (${this.width}x${this.height})`);
+        };
+        img.onerror = function() {
+            console.error(`❌ ${src} - FALHA`);
+            
+            // Tenta caminhos alternativos
+            const alternatives = [
+                src.toLowerCase(),
+                src.replace('/assets/', 'assets/'),
+                src.replace('/img-msc/', '/img_msc/'),
+                src.replace('/img-msc/', '/imgmsc/')
+            ];
+            
+            console.log('   Tentando alternativas:', alternatives);
+        };
+        img.src = src;
+    });
+}
+
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🏋️‍♂️ NextTreino Iniciando...");
+    
+    // Testa os caminhos das imagens
+    testImagePaths();
     
     // Pré-carrega imagens importantes
     preloadImportantImages();
@@ -1055,8 +1068,8 @@ function loadExercises() {
         card.className = `exercise-card ${isSelected ? 'selected' : ''}`;
         card.dataset.id = exercise.id;
         
-        // USANDO fixImagePath para garantir caminho correto
-        const imagePath = fixImagePath(exercise.image);
+        // USA O CAMINHO DIRETO do exerciseDatabase - SEM fixImagePath
+        const imagePath = exercise.image;
         
         card.innerHTML = `
             <div class="exercise-card-image">
@@ -1440,8 +1453,8 @@ function updateTrainingCarousel() {
         const slide = document.createElement('div');
         slide.className = `carousel-slide ${index === currentExerciseIndex ? 'active' : ''}`;
         
-        // USANDO fixImagePath
-        const imagePath = fixImagePath(exercise.image);
+        // USA O CAMINHO DIRETO - SEM fixImagePath
+        const imagePath = exercise.image;
         
         slide.innerHTML = `
             <img src="${imagePath}" alt="${exercise.name}" class="exercise-image"
@@ -1690,8 +1703,8 @@ function updateFavoritesPage() {
         const card = document.createElement('div');
         card.className = 'favorite-card';
         
-        // USANDO fixImagePath
-        const imagePath = fixImagePath(exercise.image);
+        // USA O CAMINHO DIRETO - SEM fixImagePath
+        const imagePath = exercise.image;
         
         card.innerHTML = `
             <div class="favorite-card-image">
