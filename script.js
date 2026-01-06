@@ -44,54 +44,55 @@ function fixImagePath(path) {
     return fixedPath;
 }
 
-// Função para tratamento de erros de imagem - VERSÃO MELHORADA
 function handleImageError(img) {
     console.warn(`⚠️ Erro ao carregar imagem: ${img.src}`);
     img.onerror = null; // Previne loop infinito
     
-    // Tenta várias estratégias para carregar a imagem
-    const originalSrc = img.src;
+    const originalSrc = img.getAttribute('data-original-src') || img.src;
     const filename = originalSrc.split('/').pop();
+    const serverBase = window.location.origin;
     
     // Estratégias de fallback em ordem de tentativa
     const fallbackStrategies = [
-        // 1. Tenta com caminho todo em minúsculas
-        originalSrc.toLowerCase(),
+        // 1. Tenta caminho original (não modificado)
+        originalSrc,
         
-        // 2. Tenta caminho relativo sem barra inicial
-        originalSrc.replace(window.location.origin + '/assets/', 'assets/'),
+        // 2. Tenta com caminho absoluto
+        serverBase + originalSrc,
         
-        // 3. Tenta apenas o nome do arquivo na pasta padrão
+        // 3. Tenta apenas o nome do arquivo na estrutura padrão (minúsculo)
+        '/assets/img-msc/' + filename.toLowerCase(),
+        
+        // 4. Tenta estrutura alternativa
         '/assets/img-msc/default/' + filename.toLowerCase(),
         
-        // 4. Usa imagem padrão do sistema
+        // 5. Imagem padrão
         '/assets/default-exercise.gif'
     ];
     
     let currentTry = 0;
+    const maxTries = fallbackStrategies.length;
     
     function tryNextStrategy() {
-        if (currentTry >= fallbackStrategies.length) {
-            // Todas as estratégias falharam
+        if (currentTry >= maxTries) {
+            console.log('📦 Todas as estratégias falharam, usando imagem padrão');
             img.src = '/assets/default-exercise.gif';
             img.style.backgroundColor = '#f0f0f0';
-            img.style.padding = '20px';
             img.alt = 'Imagem não disponível';
-            console.log('📦 Usando imagem padrão');
             return;
         }
         
         const nextSrc = fallbackStrategies[currentTry];
-        currentTry++;
-        
-        console.log(`🔄 Tentando estratégia ${currentTry}: ${nextSrc}`);
+        console.log(`🔄 Tentativa ${currentTry + 1}/${maxTries}: ${nextSrc}`);
         
         const testImg = new Image();
         testImg.onload = function() {
-            console.log(`✅ Imagem encontrada: ${nextSrc}`);
+            console.log(`✅ Sucesso: ${nextSrc}`);
             img.src = nextSrc;
         };
         testImg.onerror = function() {
+            currentTry++;
+            // Espera um pouco antes da próxima tentativa
             setTimeout(tryNextStrategy, 100);
         };
         testImg.src = nextSrc;
