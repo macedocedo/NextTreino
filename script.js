@@ -699,6 +699,9 @@ let remainingRestTime = 90;
 let totalRestTime = 90;
 let currentCategory = "todos";
 
+// Variável global para controle de edição
+let editingWorkoutId = null;
+
 // Função para verificar quais imagens estão faltando
 function checkMissingImages() {
     console.log('🔍 Verificando imagens faltantes...');
@@ -719,6 +722,278 @@ function checkMissingImages() {
             img.src = imgPath;
         });
     });
+}
+
+// ======================
+// FUNÇÕES DE FORMULÁRIO
+// ======================
+
+function resetCreateForm() {
+    console.log("🔄 Resetando formulário de criação");
+    
+    document.getElementById('workout-name').value = '';
+    selectedExercises = [];
+    updateCharCount();
+    updateSelectedList();
+    
+    // Restaura texto do botão salvar
+    const saveBtn = document.getElementById('save-workout-btn');
+    saveBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Treino';
+    
+    // Limpa estado de edição
+    editingWorkoutId = null;
+}
+
+function cleanupEditMode() {
+    console.log("🧹 Limpando modo de edição");
+    editingWorkoutId = null;
+    
+    // Restaura texto do botão salvar
+    const saveBtn = document.getElementById('save-workout-btn');
+    saveBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Treino';
+}
+
+function updateCharCount() {
+    const input = document.getElementById('workout-name');
+    const count = document.getElementById('char-count');
+    count.textContent = `${input.value.length}/50`;
+}
+
+// ======================
+// FUNÇÕES DE EDICÃO COMPLETAMENTE CORRIGIDAS
+// ======================
+
+function editWorkout(workoutId) {
+    console.log("✏️ Editando treino ID:", workoutId);
+    
+    const workout = customWorkouts.find(w => w.id === workoutId);
+    if (!workout) {
+        showMessage('Treino não encontrado!', 'error');
+        return;
+    }
+    
+    // FAZ UMA CÓPIA PROFUNDA do treino para edição
+    const workoutCopy = JSON.parse(JSON.stringify(workout));
+    
+    // Salva o ID original para referência
+    editingWorkoutId = workoutId;
+    console.log("📝 Modo edição ativado para ID:", editingWorkoutId);
+    
+    // Preenche formulário com a cópia
+    document.getElementById('workout-name').value = workoutCopy.name;
+    selectedExercises = [...workoutCopy.exercises];
+    
+    // Atualiza a interface
+    updateSelectedList();
+    loadExercises();
+    navigateToPage('page-create');
+    
+    // Muda o texto do botão para indicar edição
+    const saveBtn = document.getElementById('save-workout-btn');
+    saveBtn.innerHTML = '<i class="fas fa-save"></i> Atualizar Treino';
+    
+    showMessage(`Editando "${workoutCopy.name}"... Altere e salve para atualizar.`, 'info');
+}
+
+function finishEditingWorkout(workoutId, workoutName) {
+    console.log("🔄 Finalizando edição do treino ID:", workoutId);
+    
+    // Procura o índice do treino original
+    const workoutIndex = customWorkouts.findIndex(w => w.id === workoutId);
+    
+    if (workoutIndex === -1) {
+        console.error("❌ Treino original não encontrado!");
+        showMessage('Erro: treino original não encontrado!', 'error');
+        return;
+    }
+    
+    // SALVA OS DADOS ORIGINAIS ANTES DE ATUALIZAR
+    const originalWorkout = customWorkouts[workoutIndex];
+    console.log("📦 Dados originais:", {
+        id: originalWorkout.id,
+        name: originalWorkout.name,
+        createdAt: originalWorkout.createdAt,
+        lastUsed: originalWorkout.lastUsed,
+        isFavorite: originalWorkout.isFavorite
+    });
+    
+    // ATUALIZA O TREINO EXISTENTE
+    customWorkouts[workoutIndex] = {
+        id: workoutId, // MANTÉM O MESMO ID
+        name: workoutName,
+        exercises: [...selectedExercises], // NOVOS EXERCÍCIOS
+        createdAt: originalWorkout.createdAt, // MANTÉM data original
+        lastUsed: originalWorkout.lastUsed, // MANTÉM último uso
+        isFavorite: originalWorkout.isFavorite // MANTÉM favorito
+    };
+    
+    console.log("✅ Treino atualizado:", customWorkouts[workoutIndex]);
+    
+    // Salva alterações no localStorage
+    try {
+        localStorage.setItem('NextTreinoWorkouts', JSON.stringify(customWorkouts));
+        
+        // Atualiza treino atual se for o mesmo
+        if (currentWorkout && currentWorkout.id === workoutId) {
+            currentWorkout = customWorkouts[workoutIndex];
+            localStorage.setItem('NextTreinoCurrent', JSON.stringify(currentWorkout));
+            console.log("🎯 Treino atual também atualizado");
+        }
+        
+        // Limpa estado de edição
+        cleanupEditMode();
+        
+        // Limpa formulário
+        resetCreateForm();
+        
+        showMessage(`Treino "${workoutName}" atualizado com sucesso!`, 'success');
+        
+        // Volta para a página de treinos
+        setTimeout(() => {
+            navigateToPage('page-workouts');
+        }, 1000);
+        
+    } catch (error) {
+        console.error('❌ Erro ao salvar:', error);
+        showMessage('Erro ao salvar treino. Espaço de armazenamento pode estar cheio.', 'error');
+    }
+}
+
+// ======================
+// FUNÇÕES DE SALVAMENTO COMPLETAMENTE CORRIGIDAS
+// ======================
+
+function saveWorkout() {
+    const nameInput = document.getElementById('workout-name');
+    const workoutName = nameInput.value.trim();
+    
+    // Validação do nome
+    if (!workoutName) {
+        showMessage('Digite um nome para o treino!', 'error');
+        nameInput.focus();
+        return;
+    }
+    
+    if (workoutName.length < 3) {
+        showMessage('O nome deve ter pelo menos 3 caracteres!', 'error');
+        nameInput.focus();
+        return;
+    }
+    
+    if (selectedExercises.length === 0) {
+        showMessage('Selecione pelo menos um exercício!', 'error');
+        return;
+    }
+    
+    console.log("💾 Salvando/Atualizando treino...");
+    console.log("📝 Modo edição ativo?", editingWorkoutId);
+    console.log("📝 Nome do treino:", workoutName);
+    console.log("📝 Exercícios selecionados:", selectedExercises.length);
+    
+    // SE ESTÁ EDITANDO UM TREINO EXISTENTE
+    if (editingWorkoutId) {
+        console.log("🔄 Atualizando treino existente ID:", editingWorkoutId);
+        finishEditingWorkout(editingWorkoutId, workoutName);
+        return;
+    }
+    
+    // SE É UM NOVO TREINO
+    // Verifica se já existe treino com mesmo nome
+    const existingWorkout = customWorkouts.find(w => 
+        w.name.toLowerCase() === workoutName.toLowerCase()
+    );
+    
+    if (existingWorkout) {
+        showConfirm(
+            'Treino existente',
+            `Já existe um treino chamado "${workoutName}". Deseja substituí-lo?`,
+            () => {
+                // Remove o existente e cria novo
+                customWorkouts = customWorkouts.filter(w => w.id !== existingWorkout.id);
+                finishSavingWorkout(workoutName, true);
+            }
+        );
+        return;
+    }
+    
+    // Cria um novo treino
+    finishSavingWorkout(workoutName, false);
+}
+
+function finishSavingWorkout(workoutName, isReplacement = false) {
+    // Cria novo treino com NOVO ID
+    const newWorkout = {
+        id: Date.now().toString(),
+        name: workoutName,
+        exercises: [...selectedExercises],
+        createdAt: new Date().toISOString(),
+        lastUsed: null,
+        isFavorite: false
+    };
+    
+    console.log("💾 Criando novo treino:", newWorkout);
+    
+    // Adiciona à lista de treinos
+    customWorkouts.unshift(newWorkout);
+    
+    // Salva no localStorage
+    try {
+        localStorage.setItem('NextTreinoWorkouts', JSON.stringify(customWorkouts));
+        
+        // Define como treino atual
+        currentWorkout = newWorkout;
+        localStorage.setItem('NextTreinoCurrent', JSON.stringify(newWorkout));
+        
+        // Limpa formulário
+        resetCreateForm();
+        
+        // Redireciona para a página de treino
+        const message = isReplacement ? 
+            `Treino "${workoutName}" substituído com sucesso!` : 
+            `Treino "${workoutName}" criado com sucesso!`;
+        showMessage(message, 'success');
+        
+        setTimeout(() => {
+            navigateToPage('page-workouts');
+        }, 1000);
+        
+    } catch (error) {
+        console.error('❌ Erro ao salvar:', error);
+        showMessage('Erro ao salvar treino. Espaço de armazenamento pode estar cheio.', 'error');
+    }
+}
+
+// ======================
+// FUNÇÃO CANCELAR CRIAÇÃO CORRIGIDA
+// ======================
+
+function cancelCreation() {
+    console.log("❌ Cancelando criação/edição");
+    console.log("📝 Estado atual - Editando ID:", editingWorkoutId);
+    console.log("📝 Exercícios selecionados:", selectedExercises.length);
+    
+    if (selectedExercises.length > 0 || editingWorkoutId) {
+        showConfirm(
+            editingWorkoutId ? 'Cancelar edição' : 'Cancelar criação',
+            editingWorkoutId ? 'Tem certeza? Suas alterações serão perdidas.' : 'Tem certeza? Sua seleção será perdida.',
+            () => {
+                console.log("✅ Usuário confirmou cancelamento");
+                
+                // NÃO REMOVE O TREINO ORIGINAL - apenas cancela a edição
+                
+                // Limpa tudo
+                cleanupEditMode();
+                resetCreateForm();
+                
+                // Volta para home
+                navigateToPage('page-home');
+                
+                showMessage('Edição cancelada. O treino original foi preservado.', 'info');
+            }
+        );
+    } else {
+        navigateToPage('page-home');
+    }
 }
 
 // Inicialização
@@ -1011,14 +1286,19 @@ function updateRecentWorkouts() {
 }
 
 // ======================
-// PÁGINA CRIAR TREINO
+// FUNÇÃO DE INICIALIZAÇÃO DA PÁGINA CRIAR
 // ======================
 
 function initCreatePage() {
     console.log("🛠️ Inicializando página de criação...");
+    console.log("📝 Modo edição ativo?", editingWorkoutId);
     
-    // Reseta seleção
-    selectedExercises = [];
+    // NÃO limpa o editingWorkoutId aqui - ele é mantido se estivermos editando
+    
+    // Reseta apenas a seleção se não estiver editando
+    if (!editingWorkoutId) {
+        selectedExercises = [];
+    }
     
     // Carrega categorias
     loadCategories();
@@ -1031,6 +1311,12 @@ function initCreatePage() {
     
     // Atualiza lista selecionada
     updateSelectedList();
+    
+    // Se está editando, atualiza o texto do botão
+    if (editingWorkoutId) {
+        const saveBtn = document.getElementById('save-workout-btn');
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> Atualizar Treino';
+    }
 }
 
 function loadCategories() {
@@ -1184,120 +1470,19 @@ function updateSelectedList() {
     });
 }
 
-function updateCharCount() {
-    const input = document.getElementById('workout-name');
-    const count = document.getElementById('char-count');
-    count.textContent = `${input.value.length}/50`;
-}
-
-function cancelCreation() {
-    if (selectedExercises.length > 0) {
-        showConfirm(
-            'Cancelar criação',
-            'Tem certeza? Sua seleção será perdida.',
-            () => {
-                selectedExercises = [];
-                document.getElementById('workout-name').value = '';
-                navigateToPage('page-home');
-            }
-        );
-    } else {
-        navigateToPage('page-home');
-    }
-}
-
-function saveWorkout() {
-    const nameInput = document.getElementById('workout-name');
-    const workoutName = nameInput.value.trim();
-    
-    // Validação do nome
-    if (!workoutName) {
-        showMessage('Digite um nome para o treino!', 'error');
-        nameInput.focus();
-        return;
-    }
-    
-    if (workoutName.length < 3) {
-        showMessage('O nome deve ter pelo menos 3 caracteres!', 'error');
-        nameInput.focus();
-        return;
-    }
-    
-    if (selectedExercises.length === 0) {
-        showMessage('Selecione pelo menos um exercício!', 'error');
-        return;
-    }
-    
-    // Verifica se já existe treino com mesmo nome
-    const existingWorkout = customWorkouts.find(w => 
-        w.name.toLowerCase() === workoutName.toLowerCase()
-    );
-    
-    if (existingWorkout) {
-        showConfirm(
-            'Treino existente',
-            `Já existe um treino chamado "${workoutName}". Deseja substituí-lo?`,
-            () => {
-                // Remove o existente e continua
-                customWorkouts = customWorkouts.filter(w => w.id !== existingWorkout.id);
-                finishSavingWorkout(workoutName);
-            }
-        );
-        return;
-    }
-    
-    finishSavingWorkout(workoutName);
-}
-
-function finishSavingWorkout(workoutName) {
-    // Cria novo treino
-    const newWorkout = {
-        id: Date.now().toString(),
-        name: workoutName,
-        exercises: [...selectedExercises],
-        createdAt: new Date().toISOString(),
-        lastUsed: null,
-        isFavorite: false
-    };
-    
-    console.log("💾 Salvando treino:", newWorkout);
-    
-    // Adiciona à lista de treinos
-    customWorkouts.unshift(newWorkout);
-    
-    // Salva no localStorage
-    try {
-        localStorage.setItem('NextTreinoWorkouts', JSON.stringify(customWorkouts));
-        
-        // Define como treino atual
-        currentWorkout = newWorkout;
-        localStorage.setItem('NextTreinoCurrent', JSON.stringify(newWorkout));
-        
-        // Limpa formulário
-        selectedExercises = [];
-        document.getElementById('workout-name').value = '';
-        updateCharCount();
-        updateSelectedList();
-        
-        // Redireciona para a página de treino
-        showMessage(`Treino "${workoutName}" criado com sucesso!`, 'success');
-        navigateToPage('page-train');
-        
-    } catch (error) {
-        console.error('❌ Erro ao salvar:', error);
-        showMessage('Erro ao salvar treino. Espaço de armazenamento pode estar cheio.', 'error');
-    }
-}
-
 // ======================
-// PÁGINA MEUS TREINOS
+// PÁGINA MEUS TREINOS (atualizada para debug)
 // ======================
 
 function updateWorkoutsPage() {
+    console.log("📋 Atualizando página de treinos...");
+    console.log("📦 Total de treinos:", customWorkouts.length);
+    
     const list = document.getElementById('workouts-list');
     const empty = document.getElementById('empty-workouts');
     
     if (customWorkouts.length === 0) {
+        console.log("📭 Nenhum treino encontrado");
         empty.classList.remove('hidden');
         list.classList.add('hidden');
         return;
@@ -1307,30 +1492,41 @@ function updateWorkoutsPage() {
     list.classList.remove('hidden');
     list.innerHTML = '';
     
-    customWorkouts.forEach(workout => {
+    // Ordena por data de criação (mais recentes primeiro)
+    const sortedWorkouts = [...customWorkouts].sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    
+    sortedWorkouts.forEach(workout => {
+        console.log(`📝 Mostrando treino: ${workout.name} (ID: ${workout.id})`);
+        
         const item = document.createElement('div');
         item.className = 'workout-list-item';
         
         const date = new Date(workout.createdAt);
         const formattedDate = date.toLocaleDateString('pt-BR');
         
+        // Verifica se é o treino atual
+        const isCurrent = currentWorkout && currentWorkout.id === workout.id;
+        
         item.innerHTML = `
             <div class="workout-list-info">
-                <h4>${workout.name}</h4>
+                <h4>${workout.name} ${isCurrent ? '🏃‍♂️' : ''}</h4>
                 <p>${workout.exercises.length} exercícios • Criado em ${formattedDate}</p>
+                ${isCurrent ? '<small class="current-badge">Treino Atual</small>' : ''}
             </div>
             <div class="workout-list-actions">
                 <span class="workout-count">
                     <i class="fas fa-dumbbell"></i>
                     ${workout.exercises.length}
                 </span>
-                <button class="btn btn-sm btn-outline train-action" data-id="${workout.id}">
+                <button class="btn btn-sm btn-outline train-action" data-id="${workout.id}" title="Treinar">
                     <i class="fas fa-play"></i>
                 </button>
-                <button class="btn btn-sm btn-outline edit-action" data-id="${workout.id}">
+                <button class="btn btn-sm btn-outline edit-action" data-id="${workout.id}" title="Editar">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn btn-sm btn-outline delete-action" data-id="${workout.id}">
+                <button class="btn btn-sm btn-outline delete-action" data-id="${workout.id}" title="Excluir">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -1359,11 +1555,16 @@ function updateWorkoutsPage() {
 }
 
 function loadWorkout(workoutId) {
+    console.log("🎯 Carregando treino ID:", workoutId);
+    
     const workout = customWorkouts.find(w => w.id === workoutId);
     if (!workout) {
+        console.error("❌ Treino não encontrado!");
         showMessage('Treino não encontrado!', 'error');
         return;
     }
+    
+    console.log("✅ Treino encontrado:", workout.name);
     
     // Define como treino atual
     currentWorkout = workout;
@@ -1376,29 +1577,6 @@ function loadWorkout(workoutId) {
     // Vai para a página de treino
     showMessage(`Treino "${workout.name}" carregado!`, 'success');
     navigateToPage('page-train');
-}
-
-function editWorkout(workoutId) {
-    const workout = customWorkouts.find(w => w.id === workoutId);
-    if (!workout) {
-        showMessage('Treino não encontrado!', 'error');
-        return;
-    }
-    
-    // Preenche formulário
-    document.getElementById('workout-name').value = workout.name;
-    selectedExercises = [...workout.exercises];
-    
-    // Remove da lista (será recriado)
-    customWorkouts = customWorkouts.filter(w => w.id !== workoutId);
-    localStorage.setItem('NextTreinoWorkouts', JSON.stringify(customWorkouts));
-    
-    // Vai para página de criação
-    updateSelectedList();
-    loadExercises();
-    navigateToPage('page-create');
-    
-    showMessage('Editando treino...', 'info');
 }
 
 function deleteWorkout(workoutId) {
@@ -1854,3 +2032,4 @@ document.addEventListener('keydown', function(e) {
 
 console.log("✅ Aplicativo totalmente funcional!");
 console.log("📸 As imagens agora usam caminhos reais para os GIFs na pasta assets/img-msc/");
+console.log("🔄 Sistema de edição CORRIGIDO - agora funciona corretamente!");
