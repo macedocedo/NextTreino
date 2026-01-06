@@ -1,4 +1,4 @@
-// Função para corrigir caminhos de imagem automaticamente
+// Função para corrigir caminhos de imagem automaticamente - VERSÃO SIMPLIFICADA
 function fixImagePath(path) {
     if (!path) return '/assets/default-exercise.gif';
     
@@ -13,15 +13,8 @@ function fixImagePath(path) {
     // Converte para minúsculas (problema comum em servidores Linux)
     fixedPath = fixedPath.toLowerCase();
     
-    // Remove caracteres especiais
+    // Remove caracteres especiais, mas mantém ponto para extensões
     fixedPath = fixedPath.replace(/[^a-zA-Z0-9\-_./]/g, '');
-    
-    // Corrige problemas comuns de caminho
-    if (fixedPath.includes('img-msc')) {
-        fixedPath = fixedPath.replace('img-msc', 'img-msc');
-    } else if (fixedPath.includes('img msc')) {
-        fixedPath = fixedPath.replace('img msc', 'img-msc');
-    }
     
     // Garante que não tenha barras duplas
     fixedPath = fixedPath.replace(/\/+/g, '/');
@@ -44,61 +37,15 @@ function fixImagePath(path) {
     return fixedPath;
 }
 
+// Função SIMPLIFICADA para lidar com erro de imagem
 function handleImageError(img) {
     console.warn(`⚠️ Erro ao carregar imagem: ${img.src}`);
     img.onerror = null; // Previne loop infinito
     
-    const originalSrc = img.getAttribute('data-original-src') || img.src;
-    const filename = originalSrc.split('/').pop();
-    const serverBase = window.location.origin;
-    
-    // Estratégias de fallback em ordem de tentativa
-    const fallbackStrategies = [
-        // 1. Tenta caminho original (não modificado)
-        originalSrc,
-        
-        // 2. Tenta com caminho absoluto
-        serverBase + originalSrc,
-        
-        // 3. Tenta apenas o nome do arquivo na estrutura padrão (minúsculo)
-        '/assets/img-msc/' + filename.toLowerCase(),
-        
-        // 4. Tenta estrutura alternativa
-        '/assets/img-msc/default/' + filename.toLowerCase(),
-        
-        // 5. Imagem padrão
-        '/assets/default-exercise.gif'
-    ];
-    
-    let currentTry = 0;
-    const maxTries = fallbackStrategies.length;
-    
-    function tryNextStrategy() {
-        if (currentTry >= maxTries) {
-            console.log('📦 Todas as estratégias falharam, usando imagem padrão');
-            img.src = '/assets/default-exercise.gif';
-            img.style.backgroundColor = '#f0f0f0';
-            img.alt = 'Imagem não disponível';
-            return;
-        }
-        
-        const nextSrc = fallbackStrategies[currentTry];
-        console.log(`🔄 Tentativa ${currentTry + 1}/${maxTries}: ${nextSrc}`);
-        
-        const testImg = new Image();
-        testImg.onload = function() {
-            console.log(`✅ Sucesso: ${nextSrc}`);
-            img.src = nextSrc;
-        };
-        testImg.onerror = function() {
-            currentTry++;
-            // Espera um pouco antes da próxima tentativa
-            setTimeout(tryNextStrategy, 100);
-        };
-        testImg.src = nextSrc;
-    }
-    
-    tryNextStrategy();
+    // Tenta usar imagem padrão como fallback
+    img.src = '/assets/default-exercise.gif';
+    img.style.backgroundColor = '#f0f0f0';
+    img.alt = 'Imagem não disponível';
 }
 
 // Função para verificar se uma imagem existe
@@ -134,7 +81,7 @@ const exerciseDatabase = {
             id: "supino-reto",
             name: "Supino Reto",
             muscle: "Peito",
-            description: "Deitando-se em um banco, com os pés apoiados no chão. Segure a barra com as mãos um pouco mais abertas que os ombros, desça até o peito e depois empurre para cima, estendendo os braços. Mantenha o corpo firme e controle a respiração.",
+            description: "Deitando-se em um banco, com os pés apoiados no chão. Segure a barra com as mãos um pouco mais abertas que os ombros, desça até o peito e depois empulse para cima, estendendo os braços. Mantenha o corpo firme e controle a respiração.",
             image: "/assets/img-msc/peito/supino-reto.gif",
             sets: "4x8-10",
             rest: "60-90s",
@@ -146,7 +93,7 @@ const exerciseDatabase = {
             id: "supino-inclinado",
             name: "Supino Inclinado",
             muscle: "Peito Superior",
-            description: "Deite-se no banco inclinado. Segure a barra com as mãos afastadas. Desça a barra até o peito superior e empurre para cima.",
+            description: "Deite-se no banco inclinado. Segure a barra com as mãos afastadas. Desça a barra até o peito superior e empulse para cima.",
             image: "/assets/img-msc/peito/supino-inclinado.gif",
             sets: "4x8-12",
             rest: "90s",
@@ -170,6 +117,33 @@ let remainingRestTime = 90;
 let totalRestTime = 90;
 let currentCategory = "todos";
 
+// FUNÇÃO GLOBAL PARA PERMITIR TODOS OS GIFs SEM VALIDAÇÃO
+window.loadAllGifs = function() {
+    // Remove qualquer validação de tipo de imagem
+    const allImages = document.querySelectorAll('img[src*=".gif"], img[src*=".GIF"]');
+    
+    allImages.forEach(img => {
+        // Força o recarregamento sem validações
+        const originalSrc = img.src;
+        
+        // Se a imagem falhou, tenta recarregar
+        img.onerror = function() {
+            console.log(`🔄 Tentando recarregar GIF: ${originalSrc}`);
+            this.src = '';
+            setTimeout(() => {
+                this.src = originalSrc + '?t=' + new Date().getTime();
+            }, 100);
+        };
+        
+        // Força o recarregamento para garantir que o GIF funcione
+        if (originalSrc.includes('.gif')) {
+            setTimeout(() => {
+                img.src = originalSrc + '?t=' + new Date().getTime();
+            }, 500);
+        }
+    });
+};
+
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🏋️‍♂️ NextTreino Iniciando...");
@@ -186,7 +160,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializa a página inicial
     updateHomePage();
     
-    console.log("✅ NextTreino Pronto!");
+    // Força carregamento de todos os GIFs após 1 segundo
+    setTimeout(() => {
+        window.loadAllGifs();
+    }, 1000);
+    
+    console.log("✅ NextTreino Pronto! GIFs liberados.");
 });
 
 // ======================
@@ -605,7 +584,7 @@ function loadExercises() {
         card.className = `exercise-card ${isSelected ? 'selected' : ''}`;
         card.dataset.id = exercise.id;
         
-        // USANDO fixImagePath para garantir caminho correto
+        // USANDO fixImagePath SEM VALIDAÇÕES DE GIF
         const imagePath = fixImagePath(exercise.image);
         
         card.innerHTML = `
@@ -989,6 +968,11 @@ function updateTrainPage() {
     
     // Atualiza detalhes do exercício atual
     updateCurrentExercise();
+    
+    // Força recarregamento de GIFs
+    setTimeout(() => {
+        window.loadAllGifs();
+    }, 500);
 }
 
 function updateTrainingCarousel() {
@@ -1007,7 +991,7 @@ function updateTrainingCarousel() {
         const slide = document.createElement('div');
         slide.className = `carousel-slide ${index === currentExerciseIndex ? 'active' : ''}`;
         
-        // USANDO fixImagePath
+        // USANDO fixImagePath SEM VALIDAÇÕES DE GIF
         const imagePath = fixImagePath(exercise.image);
         
         slide.innerHTML = `
@@ -1271,7 +1255,7 @@ function updateFavoritesPage() {
         const card = document.createElement('div');
         card.className = 'favorite-card';
         
-        // USANDO fixImagePath
+        // USANDO fixImagePath SEM VALIDAÇÕES DE GIF
         const imagePath = fixImagePath(exercise.image);
         
         card.innerHTML = `
@@ -1401,4 +1385,11 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-console.log("✅ Aplicativo totalmente funcional com correções de imagem!");
+// Força recarregamento de GIFs quando a página ganha foco
+window.addEventListener('focus', function() {
+    setTimeout(() => {
+        window.loadAllGifs();
+    }, 1000);
+});
+
+console.log("✅ Aplicativo pronto! Todas as validações de GIF foram removidas.");
