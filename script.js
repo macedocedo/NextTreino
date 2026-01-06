@@ -1030,6 +1030,58 @@ function loadCategories() {
     });
 }
 
+function loadExercises() {
+    const grid = document.getElementById('exercises-grid');
+    
+    // Filtra exercícios
+    let exercises = [];
+    if (currentCategory === "todos") {
+        Object.values(exerciseDatabase).forEach(cat => exercises.push(...cat));
+    } else {
+        exercises = exerciseDatabase[currentCategory] || [];
+    }
+    
+    if (exercises.length === 0) {
+        grid.innerHTML = '<div class="no-exercises"><p>Nenhum exercício encontrado</p></div>';
+        return;
+    }
+    
+    grid.innerHTML = '';
+    
+    exercises.forEach(exercise => {
+        const isSelected = selectedExercises.some(e => e.id === exercise.id);
+        
+        const card = document.createElement('div');
+        card.className = `exercise-card ${isSelected ? 'selected' : ''}`;
+        card.dataset.id = exercise.id;
+        
+        // USANDO fixImagePath para garantir caminho correto
+        const imagePath = fixImagePath(exercise.image);
+        
+        card.innerHTML = `
+            <div class="exercise-card-image">
+                <img src="${imagePath}" alt="${exercise.name}" loading="lazy"
+                     onerror="handleImageError(this)"
+                     data-original-src="${exercise.image}">
+                <div class="exercise-card-overlay">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+            <div class="exercise-card-content">
+                <h4>${exercise.name}</h4>
+                <p class="exercise-muscle">${exercise.muscle}</p>
+                <div class="exercise-stats">
+                    <span><i class="fas fa-redo"></i> ${exercise.sets}</span>
+                    <span><i class="fas fa-clock"></i> ${exercise.rest}</span>
+                </div>
+            </div>
+        `;
+        
+        card.addEventListener('click', () => toggleExerciseSelection(exercise));
+        grid.appendChild(card);
+    });
+}
+
 function toggleExerciseSelection(exercise) {
     const index = selectedExercises.findIndex(e => e.id === exercise.id);
     
